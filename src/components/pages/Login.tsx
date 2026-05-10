@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/store/authStore';
+import { readLastServerUrl, useAuthStore } from '@/store/authStore';
 import { SubsonicError } from '@/types/subsonic';
 import { BrandMark } from '../ui/Icon';
 import styles from './Login.module.css';
@@ -9,7 +9,7 @@ export default function Login() {
   const login = useAuthStore((s) => s.login);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const navigate = useNavigate();
-  const [serverUrl, setServerUrl] = useState('');
+  const [serverUrl, setServerUrl] = useState(() => readLastServerUrl());
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(true);

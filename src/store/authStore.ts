@@ -4,6 +4,15 @@ import { deriveToken, generateSalt } from '@/lib/crypto';
 import { getUser, normalizeServerUrl, ping } from '@/lib/subsonic';
 
 const STORAGE_KEY = 'pmusic.auth.v1';
+const LAST_SERVER_KEY = 'pmusic.lastServerUrl';
+
+export function readLastServerUrl(): string {
+  try {
+    return localStorage.getItem(LAST_SERVER_KEY) ?? '';
+  } catch {
+    return '';
+  }
+}
 
 interface PersistedAuth {
   config: SubsonicConfig;
@@ -81,10 +90,16 @@ export const useAuthStore = create<AuthStore>((set) => ({
       user = { username };
     }
     writePersisted({ config, user, remember });
+    try {
+      localStorage.setItem(LAST_SERVER_KEY, cleanUrl);
+    } catch {
+      /* ignore quota / privacy-mode errors */
+    }
     set({ config, user, isAuthenticated: true });
   },
   logout: () => {
     clearPersisted();
+    // Keep LAST_SERVER_KEY intact so the next login is one field shorter.
     set({ config: null, user: null, isAuthenticated: false });
   },
 }));
