@@ -1,0 +1,250 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg-base);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  isolation: isolate;
+  animation: fade-in var(--dur-layout) var(--ease) both;
+}
+.bgLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bgLayer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(80px) saturate(140%);
+  transform: scale(1.4);
+}
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+.topBar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+}
+.eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: var(--text-tertiary);
+}
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.iconBtn {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
+}
+.iconBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: scale(1.05);
+}
+.iconBtnActive {
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.body {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 64px;
+  padding: 0 64px;
+  overflow: hidden;
+}
+.bodyNoLyrics {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.albumArt {
+  width: min(40vh, 480px);
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  justify-self: end;
+}
+.bodyNoLyrics .albumArt {
+  justify-self: center;
+}
+.albumArt img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lyricsCol {
+  max-width: 540px;
+  height: min(40vh, 480px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow: hidden;
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.songTitle {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0;
+}
+.artistName {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+.lyricsBox {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  scroll-behavior: smooth;
+  mask-image: linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%);
+  scrollbar-width: none;
+}
+.lyricsBox::-webkit-scrollbar {
+  display: none;
+}
+.lyricLine {
+  font-size: 18px;
+  line-height: 1.55;
+  padding: 6px 0;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: color var(--dur-std) var(--ease), transform var(--dur-std) var(--ease),
+    font-size var(--dur-std) var(--ease), opacity var(--dur-std) var(--ease),
+    font-weight var(--dur-std) var(--ease);
+}
+.lyricLine:hover {
+  color: var(--text-secondary);
+}
+.lyricLine.active {
+  color: var(--text-primary);
+  font-weight: 600;
+  transform: scale(1.02);
+  transform-origin: left;
+}
+.lyricLine.past {
+  color: var(--text-tertiary);
+}
+.synced .lyricLine {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 8px 0;
+}
+.synced .lyricLine.past {
+  color: rgba(255, 255, 255, 0.3);
+}
+.synced .lyricLine.active {
+  color: #fff;
+  font-size: 26px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transform: scale(1);
+}
+.noLyricsHint {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.controls {
+  position: relative;
+  z-index: 2;
+  padding: 24px 64px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.metaCenter {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.controlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.ctrl {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  border-radius: 50%;
+  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
+}
+.ctrl:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+.playBtn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  color: var(--bg-base);
+  display: grid;
+  place-items: center;
+  transition: transform var(--dur-micro) var(--ease);
+}
+.playBtn:hover {
+  transform: scale(1.06);
+}
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+.time {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  min-width: 40px;
+  text-align: center;
+}
+.timeElapsed {
+  color: var(--text-primary);
+  font-weight: 600;
+}

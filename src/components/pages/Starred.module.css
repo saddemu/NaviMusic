@@ -1,0 +1,37 @@
+.page {
+  padding: 0 0 40px;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 40px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.tab {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: color var(--dur-micro) var(--ease), border-color var(--dur-micro) var(--ease);
+  margin-bottom: -1px;
+}
+.tab:hover {
+  color: var(--text-primary);
+}
+.tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+}
+.body {
+  padding: 16px 40px;
+}
+.albumGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 22px 18px;
+}
+.artistGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 6px;
+}

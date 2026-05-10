@@ -1,0 +1,255 @@
+:root {
+  --bg-base: #090909;
+  --bg-raised: #111113;
+  --bg-surface: #1a1a1e;
+  --bg-overlay: #222228;
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --text-primary: #f2f2f5;
+  --text-secondary: rgba(242, 242, 245, 0.55);
+  --text-tertiary: rgba(242, 242, 245, 0.3);
+  --accent: #fc3c44;
+  --accent-soft: rgba(252, 60, 68, 0.15);
+  --accent-glow: rgba(252, 60, 68, 0.3);
+  --success: #2dd36f;
+  --danger: #fc3c44;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --sidebar-width: 236px;
+  --player-height: 88px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-micro: 150ms;
+  --dur-std: 220ms;
+  --dur-layout: 350ms;
+
+  --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 450;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1;
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  border: 2px solid var(--bg-base);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Custom range input — used by progress + volume sliders */
+input[type='range'].pm-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 14px;
+  background: transparent;
+  cursor: pointer;
+  --progress: 0%;
+}
+input[type='range'].pm-range::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    var(--text-primary) 0%,
+    var(--text-primary) var(--progress),
+    rgba(255, 255, 255, 0.18) var(--progress),
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  border-radius: 999px;
+  transition: height var(--dur-micro) var(--ease);
+}
+input[type='range'].pm-range::-moz-range-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+input[type='range'].pm-range::-moz-range-progress {
+  height: 4px;
+  background: var(--text-primary);
+  border-radius: 999px;
+}
+input[type='range'].pm-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  border: 0;
+  margin-top: -4px;
+  opacity: 0;
+  transition: opacity var(--dur-micro) var(--ease);
+}
+input[type='range'].pm-range::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  border: 0;
+  opacity: 0;
+  transition: opacity var(--dur-micro) var(--ease);
+}
+input[type='range'].pm-range:hover::-webkit-slider-thumb,
+input[type='range'].pm-range:focus-visible::-webkit-slider-thumb {
+  opacity: 1;
+}
+input[type='range'].pm-range:hover::-moz-range-thumb,
+input[type='range'].pm-range:focus-visible::-moz-range-thumb {
+  opacity: 1;
+}
+input[type='range'].pm-range:hover::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) var(--progress),
+    rgba(255, 255, 255, 0.18) var(--progress),
+    rgba(255, 255, 255, 0.18) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sidebar resize handle (rendered by AppLayout) */
+.sb-resize {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 20;
+}
+.sb-resize::after {
+  content: '';
+  position: absolute;
+  inset: 0 2px 0 2px;
+  background: transparent;
+  transition: background var(--dur-micro) var(--ease);
+}
+.sb-resize:hover::after,
+.sb-resize.dragging::after {
+  background: var(--accent);
+}

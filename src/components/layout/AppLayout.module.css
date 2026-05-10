@@ -1,0 +1,60 @@
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: 1fr var(--player-height);
+  height: 100dvh;
+  width: 100vw;
+  background: var(--bg-base);
+  transition: grid-template-columns var(--dur-std) var(--ease);
+}
+
+.sidebar {
+  grid-column: 1;
+  grid-row: 1 / span 1;
+  border-right: 1px solid var(--border-subtle);
+  background: var(--bg-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.mainCol {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+  background: var(--bg-base);
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.player {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-raised);
+}
+
+.routeFade {
+  animation: fade-in var(--dur-layout) var(--ease) both;
+  min-height: 100%;
+}
+
+/* While dragging the sidebar resizer, suppress transition + show grab cursor */
+.shell.dragging {
+  transition: none;
+  cursor: col-resize;
+  user-select: none;
+}
+.shell.dragging * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}

@@ -1,0 +1,67 @@
+.page {
+  padding: 0 0 40px;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+.tab {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: color var(--dur-micro) var(--ease), border-color var(--dur-micro) var(--ease);
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+.tab:hover {
+  color: var(--text-primary);
+}
+.tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+}
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 0 40px 18px;
+  flex-wrap: wrap;
+}
+.select {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--dur-micro) var(--ease);
+}
+.select:focus {
+  border-color: var(--accent);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 26px 18px;
+  padding: 4px 40px 32px;
+}
+.sentinel {
+  height: 50px;
+}
+.loading {
+  text-align: center;
+  color: var(--text-tertiary);
+  padding: 16px;
+  font-size: 13px;
+}

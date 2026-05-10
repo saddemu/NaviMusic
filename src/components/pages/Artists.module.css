@@ -1,0 +1,55 @@
+.page {
+  padding: 0 0 40px;
+  position: relative;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 32px;
+  gap: 16px;
+  padding: 0 40px 32px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 6px;
+}
+.section {
+  margin-top: 24px;
+  scroll-margin-top: 24px;
+}
+.sectionLabel {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 6px 4px 12px;
+  color: var(--text-tertiary);
+}
+.alphaBar {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  align-items: center;
+  padding: 4px 0;
+}
+.alphaBar button {
+  width: 22px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--text-tertiary);
+  border-radius: 4px;
+  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
+}
+.alphaBar button:hover {
+  color: var(--accent);
+}
+.alphaBar button.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}

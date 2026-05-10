@@ -1,0 +1,109 @@
+.shell {
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(60vw 60vh at 30% 30%, rgba(252, 60, 68, 0.08) 0%, transparent 60%),
+    radial-gradient(50vw 50vh at 70% 80%, rgba(52, 122, 255, 0.04) 0%, transparent 60%),
+    var(--bg-base);
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 36px 32px 32px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 6px;
+}
+.brand svg {
+  color: var(--accent);
+  width: 28px;
+  height: 28px;
+}
+.tagline {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.input {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color var(--dur-micro) var(--ease);
+}
+.input:focus {
+  border-color: var(--accent);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 8px 0 20px;
+}
+.row input {
+  accent-color: var(--accent);
+}
+
+.submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: white;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+  transition: filter var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+}
+.submit:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.error {
+  font-size: 12.5px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+}
+
+.warning {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 12px;
+  text-align: center;
+}

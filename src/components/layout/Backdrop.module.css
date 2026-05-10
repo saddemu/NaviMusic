@@ -1,0 +1,40 @@
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 0%, rgba(252, 60, 68, 0.22), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 85% 10%, rgba(80, 110, 220, 0.18), transparent 65%),
+    radial-gradient(ellipse 90% 70% at 50% 100%, rgba(40, 30, 70, 0.25), transparent 70%);
+}
+.img {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  filter: blur(120px) saturate(170%);
+  opacity: 0.55;
+  animation: backdrop-in 600ms var(--ease) both;
+}
+.img + .img {
+  /* Newer image on top — old one under fades out via overlay paint. */
+  opacity: 0.55;
+}
+.veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 0%, transparent 0%, rgba(9, 9, 9, 0.55) 75%, var(--bg-base) 100%),
+    linear-gradient(180deg, rgba(9, 9, 9, 0.2) 0%, rgba(9, 9, 9, 0.55) 60%, var(--bg-base) 100%);
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.55;
+  }
+}

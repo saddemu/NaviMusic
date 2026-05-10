@@ -1,0 +1,36 @@
+.page {
+  padding: 0 0 40px;
+}
+.tableHead {
+  display: grid;
+  grid-template-columns: 36px 1fr minmax(140px, 1fr) minmax(140px, 1fr) 80px 60px 32px 32px;
+  gap: 14px;
+  padding: 8px 52px 8px 52px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  background: var(--bg-base);
+  z-index: 5;
+}
+.tableHead button {
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.tableHead button:hover {
+  color: var(--text-primary);
+}
+.virtual {
+  padding: 0 40px;
+}
+.viewport {
+  position: relative;
+}
