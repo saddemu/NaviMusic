@@ -28,33 +28,55 @@ export function normalizeServerUrl(raw: string): string {
   return `${url.protocol}//${url.host}${url.pathname.replace(/\/$/, '')}`;
 }
 
+type ParamValue = string | number | boolean | undefined;
+type Params = Record<string, ParamValue | Array<string | number>>;
+
+function authParams(config: SubsonicConfig, params: Params = {}): URLSearchParams {
+  const out = new URLSearchParams();
+  out.set('u', config.username);
+  out.set('t', config.token);
+  out.set('s', config.salt);
+  out.set('v', VERSION);
+  out.set('c', CLIENT);
+  out.set('f', 'json');
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null) continue;
+    if (Array.isArray(value)) {
+      for (const v of value) out.append(key, String(v));
+    } else {
+      out.set(key, String(value));
+    }
+  }
+  return out;
+}
+
+// Only for resources that must be URLs (<audio src> / <img src>): stream,
+// getCoverArt. JSON endpoints go through request(), which POSTs the auth
+// tuple in the body so tokens stay out of server access logs.
 export function buildUrl(
   config: SubsonicConfig,
   endpoint: string,
   params: Record<string, string | number | boolean | undefined> = {},
 ): string {
   const url = new URL(`${config.serverUrl}/rest/${endpoint}`);
-  url.searchParams.set('u', config.username);
-  url.searchParams.set('t', config.token);
-  url.searchParams.set('s', config.salt);
-  url.searchParams.set('v', VERSION);
-  url.searchParams.set('c', CLIENT);
-  url.searchParams.set('f', 'json');
-  for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined && value !== null) url.searchParams.set(key, String(value));
-  }
+  url.search = authParams(config, params).toString();
   return url.toString();
 }
 
 async function request<T>(
   config: SubsonicConfig,
   endpoint: string,
-  params?: Record<string, string | number | boolean | undefined>,
+  params?: Params,
 ): Promise<T> {
-  const url = buildUrl(config, endpoint, params);
   let res: Response;
   try {
-    res = await fetch(url, { headers: { Accept: 'application/json' } });
+    // POST keeps u/t/s out of URLs (and therefore out of access logs).
+    // form-urlencoded is a CORS "simple request" — no preflight needed.
+    res = await fetch(`${config.serverUrl}/rest/${endpoint}`, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: authParams(config, params),
+    });
   } catch {
     throw new SubsonicError(-1, 'Cannot reach server.');
   }
@@ -208,20 +230,12 @@ export async function updatePlaylist(
   songIdsToAdd?: string[],
   songIndexesToRemove?: number[],
 ): Promise<void> {
-  const params = new URLSearchParams();
-  params.set('playlistId', id);
-  if (name) params.set('name', name);
-  for (const sid of songIdsToAdd ?? []) params.append('songIdToAdd', sid);
-  for (const idx of songIndexesToRemove ?? []) params.append('songIndexToRemove', String(idx));
-  const url = buildUrl(config, 'updatePlaylist');
-  const finalUrl = `${url}&${params.toString()}`;
-  const res = await fetch(finalUrl, { headers: { Accept: 'application/json' } });
-  if (!res.ok) throw new SubsonicError(res.status, `HTTP ${res.status}`);
-  const json = (await res.json()) as SubsonicResponse<unknown>;
-  if (json['subsonic-response'].status !== 'ok') {
-    const err = json['subsonic-response'].error;
-    throw new SubsonicError(err?.code ?? 0, err?.message ?? 'Update failed');
-  }
+  await request(config, 'updatePlaylist', {
+    playlistId: id,
+    name,
+    songIdToAdd: songIdsToAdd,
+    songIndexToRemove: songIndexesToRemove,
+  });
 }
 
 export async function deletePlaylist(config: SubsonicConfig, id: string): Promise<void> {

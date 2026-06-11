@@ -20,7 +20,17 @@ export default function Login() {
     if (isAuthenticated) navigate('/', { replace: true });
   }, [isAuthenticated, navigate]);
 
-  const isInsecure = serverUrl.startsWith('http://') && !serverUrl.includes('localhost');
+  const isInsecure = (() => {
+    try {
+      const u = new URL(serverUrl);
+      const host = u.hostname.replace(/^\[|\]$/g, '');
+      const isLoopback =
+        host === 'localhost' || host.endsWith('.localhost') || host === '127.0.0.1' || host === '::1';
+      return u.protocol === 'http:' && !isLoopback;
+    } catch {
+      return false;
+    }
+  })();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

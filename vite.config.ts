@@ -25,8 +25,9 @@ export default defineConfig({
   esbuild: {
     drop: ['console', 'debugger'],
   },
+  // Dev server binds to localhost only. Run `vite --host` explicitly if you
+  // need LAN access (e.g. testing from a phone).
   server: {
     port: 5173,
-    host: true,
   },
 });
