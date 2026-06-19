@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import DOMPurify from 'dompurify';
 import { coverArtUrl, getAlbum, getArtist, getArtistInfo2, getTopSongs } from '@/lib/subsonic';
+import { sanitizeBio } from '@/lib/sanitize';
 import { useAuthStore } from '@/store/authStore';
 import { usePlayerStore } from '@/store/playerStore';
 import { useUiStore } from '@/store/uiStore';
@@ -13,15 +13,6 @@ import Skeleton from '../ui/Skeleton';
 import EmptyState from '../ui/EmptyState';
 import { ShuffleIcon } from '../ui/Icon';
 import styles from './ArtistDetail.module.css';
-
-// Bio links: force new tab without window.opener access. Runs after
-// sanitize, so these are the only attributes besides href that survive.
-DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-  if (node.tagName === 'A') {
-    node.setAttribute('target', '_blank');
-    node.setAttribute('rel', 'noopener noreferrer');
-  }
-});
 
 export default function ArtistDetail() {
   const { id } = useParams();
@@ -102,12 +93,7 @@ export default function ArtistDetail() {
 
   const albums = (artist.data.album ?? []).slice().sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 
-  const cleanBio = info.data?.biography
-    ? DOMPurify.sanitize(info.data.biography, {
-        ALLOWED_TAGS: ['a', 'em', 'strong', 'br'],
-        ALLOWED_ATTR: ['href'],
-      })
-    : '';
+  const cleanBio = info.data?.biography ? sanitizeBio(info.data.biography) : '';
 
   return (
     <div className={styles.page}>

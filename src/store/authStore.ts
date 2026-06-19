@@ -91,7 +91,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
     writePersisted({ config, user, remember });
     try {
-      localStorage.setItem(LAST_SERVER_KEY, cleanUrl);
+      if (remember) {
+        localStorage.setItem(LAST_SERVER_KEY, cleanUrl);
+      } else {
+        localStorage.removeItem(LAST_SERVER_KEY);
+      }
     } catch {
       /* ignore quota / privacy-mode errors */
     }
