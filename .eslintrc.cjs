@@ -8,7 +8,8 @@ module.exports = {
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs', 'vite.config.ts'],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-hooks'],
+  plugins: ['react', 'react-hooks'],
+  settings: { react: { version: 'detect' } },
   rules: {
     'react/no-danger': 'error',
     '@typescript-eslint/no-explicit-any': 'error',

@@ -5,6 +5,7 @@ import { coverArtUrl, getAlbum, getAlbumList2, getRandomSongs } from '@/lib/subs
 import { useAuthStore } from '@/store/authStore';
 import { usePlayerStore } from '@/store/playerStore';
 import { greeting } from '@/lib/utils';
+import { useDragScroll } from '@/hooks/useDragScroll';
 import AlbumCard from '../ui/AlbumCard';
 import PageHeader from '../ui/PageHeader';
 import Skeleton from '../ui/Skeleton';
@@ -102,6 +103,9 @@ function SongCell({ song, queue, index }: { song: Song; queue: Song[]; index: nu
 export default function Home() {
   const config = useAuthStore((s) => s.config);
   const user = useAuthStore((s) => s.user);
+  const newestRow = useDragScroll<HTMLDivElement>();
+  const recentRow = useDragScroll<HTMLDivElement>();
+  const discoverRow = useDragScroll<HTMLDivElement>();
 
   const newest = useQuery({
     queryKey: ['albumList', 'newest', 24],
@@ -180,7 +184,7 @@ export default function Home() {
           <h2>Recently Added</h2>
           <Link to="/albums?sort=newest">See all</Link>
         </div>
-        <div className={styles.scroll}>
+        <div className={styles.scroll} ref={newestRow}>
           {newest.isLoading
             ? Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)
             : newest.data?.map((a) => <AlbumCard key={a.id} album={a} />)}
@@ -192,7 +196,7 @@ export default function Home() {
           <h2>Recently Played</h2>
           <Link to="/albums?sort=recent">See all</Link>
         </div>
-        <div className={styles.scroll}>
+        <div className={styles.scroll} ref={recentRow}>
           {recent.isLoading
             ? Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)
             : recent.data?.map((a) => <AlbumCard key={a.id} album={a} />)}
@@ -203,7 +207,7 @@ export default function Home() {
         <div className={styles.sectionHeader}>
           <h2>Discover</h2>
         </div>
-        <div className={styles.scroll}>
+        <div className={styles.scroll} ref={discoverRow}>
           {random.isLoading
             ? Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)
             : random.data?.map((a) => <AlbumCard key={a.id} album={a} />)}

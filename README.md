@@ -46,7 +46,7 @@ npm run build        # production build → dist/
 npm run preview      # preview the production build on :3000
 ```
 
-Requirements: **Node 20+**.
+Requirements: **Node 22+** (Node 20 is end-of-life).
 
 ---
 
@@ -70,7 +70,8 @@ If a token ever fails server-side, pMusic auto-logs out and returns to the login
 
 ## Features
 
-- **Home** — recently played, newest, random
+- **Home** — recently played, newest, random; card rows scroll horizontally by
+  dragging with the mouse (touch scrolls natively)
 - **Library** — Albums (sortable + genre filter, lazy-loaded), Artists (alphabetical jump
   bar), Songs (virtualized list, sortable), Genres
 - **Search** — instant 300 ms debounce across songs / albums / artists with recent searches
@@ -128,18 +129,29 @@ run.sh
 
 ## Security notes
 
-- Passwords are never stored, never logged, never put in URL params.
-- All Subsonic calls go through one helper (`src/lib/subsonic.ts`); no ad-hoc fetches.
-- Server URLs are validated with the `URL` constructor; non-`http(s)` schemes are rejected.
-- Any HTML coming back from the server (artist biographies, lyrics) is run through
-  **DOMPurify** before being rendered.
+See also [SECURITY.md](SECURITY.md) for the full transparency statement.
+
+- Passwords are never stored, never logged, never put in URL params. The Subsonic token
+  is derived client-side once at login and the password is discarded.
+- All Subsonic API calls go through one helper (`src/lib/subsonic.ts`) and use **POST**
+  with a form body, so tokens never appear in URLs or server access logs. The only
+  exceptions are `stream` and `getCoverArt`, which the browser must fetch as media URLs.
+- Server URLs are validated with the `URL` constructor; non-`http(s)` schemes are
+  rejected, embedded credentials/query/hash are stripped.
+- Any HTML coming back from the server (artist biographies) is run through **DOMPurify**
+  with a tag *and* attribute whitelist; bio links are forced to
+  `rel="noopener noreferrer"`. Lyrics are rendered as plain text.
 - ESLint blocks `dangerouslySetInnerHTML` at lint level (`react/no-danger`).
-- Pinned dependency versions (no `^` ranges) — `npm audit` runs as part of CI if you wire
-  it up.
+- **No third-party requests at runtime**: fonts are self-hosted, no CDNs, no analytics,
+  no telemetry. The app talks exclusively to the music server you configure.
+- Pinned dependency versions (no `^` ranges), `npm audit` clean (0 vulnerabilities).
+- The container runs as a non-root user with a read-only filesystem and
+  `no-new-privileges`, bound to `127.0.0.1` only.
 
 The Dockerfile only ships a minimal static-file server (`serve`). TLS, security headers,
 HSTS, CSP, gzip, and rate limits are expected to be handled by your **external reverse
-proxy** — that was a deliberate choice (you said you'd manage Nginx yourself).
+proxy** — `nginx.example.conf` is a hardened, ready-to-use example (strict CSP with
+`script-src 'self'`, rate limiting, modern TLS).
 
 ---
 

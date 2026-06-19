@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getAlbumList2, getAlbum, getGenres, getSongsByGenre } from '@/lib/subsonic';
+import { getAlbum, getAlbumList2, getGenres, getSongsByGenre } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
 import { usePlayerStore } from '@/store/playerStore';
 import type { Song } from '@/types/subsonic';
@@ -10,9 +10,15 @@ import styles from './Songs.module.css';
 
 const ROW_HEIGHT = 56;
 const OVERSCAN = 6;
-const PAGE_SIZE = 100;
+const ALBUMS_PER_PAGE = 50;
+const GENRE_PAGE_SIZE = 500;
 
 type SortKey = 'title' | 'artist' | 'album' | 'duration';
+
+interface SongsPage {
+  songs: Song[];
+  nextOffset: number | null;
+}
 
 export default function Songs() {
   const config = useAuthStore((s) => s.config);
@@ -31,30 +37,41 @@ export default function Songs() {
     enabled: !!config,
   });
 
-  // Bulk fetch songs by paginating through random albums or by genre.
+  // Songs come from the album tree (getAlbum keeps coverArt populated on
+  // every server) and stream in page by page so the list renders right away.
   const songsQuery = useInfiniteQuery({
     queryKey: ['songs-feed', genreFilter],
-    queryFn: async ({ pageParam = 0 }): Promise<Song[]> => {
-      if (!config) return [];
+    queryFn: async ({ pageParam }): Promise<SongsPage> => {
+      if (!config) return { songs: [], nextOffset: null };
       if (genreFilter) {
-        return getSongsByGenre(config, genreFilter, PAGE_SIZE, pageParam);
+        const songs = await getSongsByGenre(config, genreFilter, GENRE_PAGE_SIZE, pageParam);
+        return {
+          songs,
+          nextOffset: songs.length < GENRE_PAGE_SIZE ? null : pageParam + GENRE_PAGE_SIZE,
+        };
       }
-      const albums = await getAlbumList2(
-        config,
-        'alphabeticalByName',
-        20,
-        Math.floor(pageParam / 20),
-      );
+      const albums = await getAlbumList2(config, 'alphabeticalByName', ALBUMS_PER_PAGE, pageParam);
       const detailed = await Promise.all(albums.map((a) => getAlbum(config, a.id)));
-      return detailed.flatMap((a) => a.song ?? []);
+      return {
+        songs: detailed.flatMap((a) => a.song ?? []),
+        nextOffset: albums.length < ALBUMS_PER_PAGE ? null : pageParam + ALBUMS_PER_PAGE,
+      };
     },
     initialPageParam: 0,
-    getNextPageParam: (last, all) =>
-      last.length === 0 ? undefined : (genreFilter ? all.length * PAGE_SIZE : all.length * 20),
+    getNextPageParam: (last) => last.nextOffset,
     enabled: !!config,
   });
 
-  const allSongs = useMemo(() => songsQuery.data?.pages.flat() ?? [], [songsQuery.data]);
+  // Pull the whole library eagerly instead of waiting for scroll.
+  const { hasNextPage, isFetching, fetchNextPage } = songsQuery;
+  useEffect(() => {
+    if (hasNextPage && !isFetching) fetchNextPage();
+  }, [hasNextPage, isFetching, fetchNextPage]);
+
+  const allSongs = useMemo(
+    () => songsQuery.data?.pages.flatMap((p) => p.songs) ?? [],
+    [songsQuery.data],
+  );
 
   const sorted = useMemo(() => {
     const dir = sortAsc ? 1 : -1;
@@ -65,17 +82,6 @@ export default function Songs() {
       return String(av).localeCompare(String(bv)) * dir;
     });
   }, [allSongs, sortKey, sortAsc]);
-
-  // Auto-fetch more if not enough rows for viewport
-  useEffect(() => {
-    if (
-      !songsQuery.isFetching &&
-      songsQuery.hasNextPage &&
-      sorted.length * ROW_HEIGHT < viewportHeight + scrollTop + 600
-    ) {
-      songsQuery.fetchNextPage();
-    }
-  }, [songsQuery, sorted.length, scrollTop, viewportHeight]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -109,7 +115,10 @@ export default function Songs() {
 
   return (
     <div className={styles.page} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <PageHeader title="Songs" subtitle={`${sorted.length} loaded`} actions={
+      <PageHeader
+        title="Songs"
+        subtitle={hasNextPage ? `${sorted.length} songs…` : `${sorted.length} songs`}
+        actions={
         <select
           value={genreFilter}
           onChange={(e) => setGenreFilter(e.target.value)}

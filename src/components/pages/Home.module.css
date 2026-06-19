@@ -34,6 +34,8 @@
   overflow-x: auto;
   padding-bottom: 8px;
   scroll-snap-type: x proximity;
+  cursor: grab;
+  user-select: none;
 }
 .scroll > * {
   scroll-snap-align: start;

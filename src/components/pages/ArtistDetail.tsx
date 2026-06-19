@@ -14,6 +14,15 @@ import EmptyState from '../ui/EmptyState';
 import { ShuffleIcon } from '../ui/Icon';
 import styles from './ArtistDetail.module.css';
 
+// Bio links: force new tab without window.opener access. Runs after
+// sanitize, so these are the only attributes besides href that survive.
+DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+  if (node.tagName === 'A') {
+    node.setAttribute('target', '_blank');
+    node.setAttribute('rel', 'noopener noreferrer');
+  }
+});
+
 export default function ArtistDetail() {
   const { id } = useParams();
   const config = useAuthStore((s) => s.config);
@@ -94,7 +103,10 @@ export default function ArtistDetail() {
   const albums = (artist.data.album ?? []).slice().sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 
   const cleanBio = info.data?.biography
-    ? DOMPurify.sanitize(info.data.biography, { ALLOWED_TAGS: ['a', 'em', 'strong', 'br'] })
+    ? DOMPurify.sanitize(info.data.biography, {
+        ALLOWED_TAGS: ['a', 'em', 'strong', 'br'],
+        ALLOWED_ATTR: ['href'],
+      })
     : '';
 
   return (
