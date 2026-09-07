@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { startAudioEngine } from '@/lib/player';
 import { useUiStore, SIDEBAR_BOUNDS } from '@/store/uiStore';
@@ -19,6 +19,7 @@ export default function AppLayout() {
   const sidebarWidth = useUiStore((s) => s.sidebarWidth);
   const setSidebarWidth = useUiStore((s) => s.setSidebarWidth);
   const [dragging, setDragging] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const stop = startAudioEngine();
@@ -27,7 +28,15 @@ export default function AppLayout() {
 
   useEffect(() => {
     mainRef.current?.scrollTo({ top: 0 });
+    setScrolled(false);
   }, [location.pathname]);
+
+  // The top bar only materialises once there is content underneath it —
+  // floating chrome should not announce itself over an empty page.
+  const onMainScroll = useCallback(() => {
+    const top = mainRef.current?.scrollTop ?? 0;
+    setScrolled((was) => (was ? top > 4 : top > 12));
+  }, []);
 
   // Push sidebar width into the CSS variable for grid-template-columns
   useLayoutEffect(() => {
@@ -54,6 +63,9 @@ export default function AppLayout() {
 
   return (
     <div className={`${styles.shell}${dragging ? ' ' + styles.dragging : ''}`}>
+      <div className={styles.backdropLayer}>
+        <Backdrop />
+      </div>
       <aside className={styles.sidebar}>
         <Sidebar />
         <div
@@ -69,9 +81,8 @@ export default function AppLayout() {
         />
       </aside>
       <div className={styles.mainCol}>
-        <Backdrop />
-        <TopBar />
-        <main className={styles.main} ref={mainRef}>
+        <TopBar scrolled={scrolled} />
+        <main className={styles.main} ref={mainRef} onScroll={onMainScroll}>
           <div className={styles.routeFade} key={location.pathname}>
             <Outlet />
           </div>

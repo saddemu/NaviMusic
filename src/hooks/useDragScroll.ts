@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { SPRING, Spring, project, prefersReducedMotion, rubberband } from '@/lib/spring';
 
 /**
  * Makes a horizontally scrollable container draggable with the mouse.
@@ -6,10 +7,17 @@ import { useEffect, useRef } from 'react';
  * handled). After a real drag, the click that would land on the card under
  * the cursor is swallowed so cards don't navigate when the user lets go.
  *
- * Scroll writes are coalesced into requestAnimationFrame, scroll-snap is
- * suspended for the duration of the gesture (it fights manual scrollLeft
- * writes and causes jitter), and releasing mid-motion glides out with a
- * light momentum before snap is restored.
+ * On release the row does not decelerate and *then* correct itself onto a
+ * snap point. The resting position is projected from the release velocity
+ * first (the same exponential-decay model scroll views use), the nearest card
+ * to that projection becomes the target, and a single spring carries the row
+ * there with the finger's own velocity — so a flick reads as a throw with a
+ * destination rather than a slide followed by a tug.
+ *
+ * At the ends the row rubber-bands: `scrollLeft` cannot go past its bounds, so
+ * the overshoot is applied as a transform with progressive resistance and
+ * springs back on release. A hard stop reads as frozen; resistance reads as
+ * "responsive, but there is nothing more here".
  */
 export function useDragScroll<T extends HTMLElement>() {
   const ref = useRef<T | null>(null);
@@ -19,9 +27,8 @@ export function useDragScroll<T extends HTMLElement>() {
     if (!el) return;
 
     const DRAG_THRESHOLD = 5; // px before a press becomes a drag
-    const MOMENTUM_TAU = 200; // ms — decay time constant (small = light inertia)
-    const MIN_FLICK_VELOCITY = 0.05; // px/ms below which release has no glide
-    const STOP_VELOCITY = 0.01; // px/ms at which the glide settles
+    const MIN_FLICK_VELOCITY = 50; // px/s below which a release has no glide
+    const MAX_RUBBERBAND = 120; // px of give at either end
 
     let pointerId = -1;
     let startX = 0;
@@ -31,55 +38,67 @@ export function useDragScroll<T extends HTMLElement>() {
 
     let targetScrollLeft = 0;
     let moveRaf = 0;
-    let momentumRaf = 0;
-    let velocity = 0; // px/ms, in scroll direction
+    let velocity = 0; // px/s, positive = scrolling right
     let lastX = 0;
     let lastMoveTime = 0;
+    let overshoot = 0; // px past an end, before resistance
     let snapRestoreTimer = 0;
 
+    const maxScroll = () => Math.max(0, el.scrollWidth - el.clientWidth);
+
+    // Scroll-snap fights manual scrollLeft writes, so it is off for the whole
+    // gesture and for the glide that follows; the projection already lands on
+    // a snap point, so nothing is lost.
     const suspendSnap = () => {
       window.clearTimeout(snapRestoreTimer);
       el.style.scrollBehavior = 'auto';
       el.style.scrollSnapType = 'none';
     };
-
-    // Re-enabling snap makes the browser re-snap immediately; doing it with
-    // smooth behavior turns that correction into a short ease instead of a jump.
     const restoreSnap = () => {
-      el.style.scrollBehavior = 'smooth';
       el.style.scrollSnapType = '';
       snapRestoreTimer = window.setTimeout(() => {
         el.style.scrollBehavior = '';
-      }, 400);
+      }, 60);
     };
 
-    const stopMomentum = () => {
-      cancelAnimationFrame(momentumRaf);
-      momentumRaf = 0;
+    const applyOvershoot = (px: number) => {
+      overshoot = px;
+      el.style.transform = px === 0 ? '' : `translateX(${-px}px)`;
     };
 
-    const startMomentum = () => {
-      let prev = performance.now();
-      const step = (now: number) => {
-        const dt = now - prev;
-        prev = now;
-        el.scrollLeft += velocity * dt;
-        velocity *= Math.exp(-dt / MOMENTUM_TAU);
-        const maxScroll = el.scrollWidth - el.clientWidth;
-        const atEdge = el.scrollLeft <= 0 || el.scrollLeft >= maxScroll;
-        if (Math.abs(velocity) < STOP_VELOCITY || atEdge) {
-          momentumRaf = 0;
-          restoreSnap();
-          return;
+    // One spring for the glide, re-targeted rather than restarted.
+    const glide = new Spring(0, (v) => {
+      el.scrollLeft = v;
+    }, SPRING.flick, { delta: 0.5, speed: 5 });
+
+    // A separate spring returns the rubber-band to zero.
+    const bandBack = new Spring(0, applyOvershoot, SPRING.sheet, { delta: 0.2, speed: 1 });
+
+    /** Nearest child start edge to a projected scroll position. */
+    const nearestSnapPoint = (position: number): number => {
+      const children = Array.from(el.children) as HTMLElement[];
+      if (children.length === 0) return position;
+      let best = position;
+      let bestDistance = Infinity;
+      for (const child of children) {
+        const edge = child.offsetLeft - el.offsetLeft;
+        const distance = Math.abs(edge - position);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          best = edge;
         }
-        momentumRaf = requestAnimationFrame(step);
-      };
-      momentumRaf = requestAnimationFrame(step);
+      }
+      return best;
+    };
+
+    const stopMotion = () => {
+      glide.stop();
+      bandBack.stop();
     };
 
     const onPointerDown = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      stopMomentum();
+      stopMotion();
       pointerId = e.pointerId;
       startX = e.clientX;
       lastX = e.clientX;
@@ -103,33 +122,60 @@ export function useDragScroll<T extends HTMLElement>() {
       const dt = e.timeStamp - lastMoveTime;
       if (dt > 0) {
         // Low-pass the instantaneous velocity so one noisy event can't spike it.
-        const instant = -(e.clientX - lastX) / dt;
+        const instant = (-(e.clientX - lastX) / dt) * 1000;
         velocity = velocity * 0.2 + instant * 0.8;
         lastX = e.clientX;
         lastMoveTime = e.timeStamp;
       }
-      targetScrollLeft = startScrollLeft - dx;
+
+      const wanted = startScrollLeft - dx;
+      const max = maxScroll();
+      targetScrollLeft = Math.max(0, Math.min(max, wanted));
+      const past = wanted < 0 ? wanted : wanted > max ? wanted - max : 0;
+
       if (!moveRaf) {
         moveRaf = requestAnimationFrame(() => {
           moveRaf = 0;
           el.scrollLeft = targetScrollLeft;
+          applyOvershoot(
+            past === 0
+              ? 0
+              : Math.sign(past) * Math.min(MAX_RUBBERBAND, Math.abs(rubberband(past, el.clientWidth))),
+          );
         });
       }
     };
 
     const endDrag = (e: PointerEvent) => {
       if (e.pointerId !== pointerId) return;
-      if (dragging) {
-        suppressClick = true;
-        el.style.cursor = '';
-        if (el.hasPointerCapture(pointerId)) el.releasePointerCapture(pointerId);
-        // A pause before release means the user stopped, not flicked.
-        if (e.timeStamp - lastMoveTime > 80) velocity = 0;
-        if (Math.abs(velocity) >= MIN_FLICK_VELOCITY) startMomentum();
-        else restoreSnap();
-      }
       pointerId = -1;
+      if (!dragging) return;
       dragging = false;
+      suppressClick = true;
+      el.style.cursor = '';
+      if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+
+      if (overshoot !== 0) {
+        bandBack.set(overshoot);
+        bandBack.to(0, { onRest: restoreSnap });
+        return;
+      }
+
+      // A pause before release means the user stopped, not flicked.
+      if (e.timeStamp - lastMoveTime > 80) velocity = 0;
+
+      if (Math.abs(velocity) < MIN_FLICK_VELOCITY || prefersReducedMotion()) {
+        restoreSnap();
+        return;
+      }
+
+      // Land where the gesture was going, not where it happened to stop.
+      const projected = el.scrollLeft + project(velocity);
+      const clamped = Math.max(0, Math.min(maxScroll(), projected));
+      const target = Math.max(0, Math.min(maxScroll(), nearestSnapPoint(clamped)));
+
+      glide.set(el.scrollLeft);
+      glide.to(target, { velocity, onRest: restoreSnap });
     };
 
     const onClickCapture = (e: MouseEvent) => {
@@ -140,7 +186,7 @@ export function useDragScroll<T extends HTMLElement>() {
     };
 
     // The wheel takes over immediately; a running glide must not fight it.
-    const onWheel = () => stopMomentum();
+    const onWheel = () => stopMotion();
 
     // Images/links inside the row must not start a native HTML5 drag.
     const onDragStart = (e: DragEvent) => e.preventDefault();
@@ -154,7 +200,7 @@ export function useDragScroll<T extends HTMLElement>() {
     el.addEventListener('dragstart', onDragStart);
     return () => {
       cancelAnimationFrame(moveRaf);
-      stopMomentum();
+      stopMotion();
       window.clearTimeout(snapRestoreTimer);
       el.removeEventListener('pointerdown', onPointerDown);
       el.removeEventListener('pointermove', onPointerMove);

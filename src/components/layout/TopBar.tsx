@@ -5,7 +5,12 @@ import { getInitials } from '@/lib/utils';
 import { ChevronRight, LogoutIcon, SettingsIcon } from '../ui/Icon';
 import styles from './TopBar.module.css';
 
-export default function TopBar() {
+interface Props {
+  /** True once content has scrolled under the bar — see `.scrolled` in the CSS. */
+  scrolled?: boolean;
+}
+
+export default function TopBar({ scrolled = false }: Props) {
   const user = useAuthStore((s) => s.user);
   const config = useAuthStore((s) => s.config);
   const logout = useAuthStore((s) => s.logout);
@@ -33,7 +38,7 @@ export default function TopBar() {
   const serverHost = config ? new URL(config.serverUrl).host : '';
 
   return (
-    <div className={styles.bar}>
+    <div className={`${styles.bar}${scrolled ? ' ' + styles.scrolled : ''}`}>
       <div className={styles.wrap} ref={wrapRef}>
         <button
           className={`${styles.profileBtn}${open ? ' ' + styles.open : ''}`}

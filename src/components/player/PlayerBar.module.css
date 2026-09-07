@@ -29,6 +29,9 @@
 .cover:hover {
   transform: scale(1.04);
 }
+.cover:active {
+  transform: scale(0.96);
+}
 .cover img {
   width: 100%;
   height: 100%;
@@ -44,8 +47,15 @@
   opacity: 0;
   transition: opacity var(--dur-micro) var(--ease);
 }
-.cover:hover .expandHint {
+.cover:hover .expandHint,
+.cover:focus-visible .expandHint {
   opacity: 1;
+}
+/* Nothing hovers on touch — the expand affordance has to be visible. */
+@media (hover: none) {
+  .expandHint {
+    opacity: 0.75;
+  }
 }
 
 .meta {
@@ -56,7 +66,7 @@
 }
 .title {
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -64,7 +74,7 @@
   text-overflow: ellipsis;
 }
 .artist {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
@@ -82,12 +92,16 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
+  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
   flex-shrink: 0;
 }
 .heart:hover {
   background: var(--bg-surface);
   color: var(--text-primary);
+}
+.heart:active {
+  transform: scale(0.85);
 }
 .heart.active {
   color: var(--accent);
@@ -123,6 +137,10 @@
   color: var(--text-primary);
   background: var(--bg-surface);
 }
+.ctrl:active:not(:disabled) {
+  transform: scale(0.88);
+  background: var(--bg-overlay);
+}
 .ctrl.active {
   color: var(--accent);
 }
@@ -139,6 +157,9 @@
 .playBtn:hover:not(:disabled) {
   transform: scale(1.06);
 }
+.playBtn:active:not(:disabled) {
+  transform: scale(0.94);
+}
 
 .progressRow {
   display: flex;
@@ -146,7 +167,7 @@
   gap: 10px;
 }
 .time {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-tertiary);
   font-variant-numeric: tabular-nums;
   min-width: 36px;
@@ -164,11 +185,11 @@
   gap: 6px;
 }
 .bitrate {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: var(--text-tertiary);
   font-weight: 500;
-  letter-spacing: 0.4px;
-  border: 1px solid var(--border-subtle);
+  letter-spacing: var(--tracking-caps);
+  border: 1px solid var(--glass-edge-soft);
   border-radius: 4px;
   padding: 2px 5px;
 }

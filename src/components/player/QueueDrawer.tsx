@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSheetGesture } from '@/hooks/useSheetGesture';
 import { coverArtUrl } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
 import { usePlayerStore } from '@/store/playerStore';
@@ -18,16 +19,27 @@ export default function QueueDrawer() {
 
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
+  // Reordering is armed only from the grip, so a press anywhere else in a row
+  // is free to become the drawer's own dismiss gesture.
+  const [reorderArmed, setReorderArmed] = useState(false);
+
+  const { panelRef, backdropRef } = useSheetGesture<HTMLElement, HTMLDivElement>({
+    open: isOpen,
+    onClose: () => setQueueDrawer(false),
+    axis: 'x',
+  });
 
   return (
     <>
       <div
-        className={`${styles.backdrop}${isOpen ? ' ' + styles.open : ''}`}
+        ref={backdropRef}
+        className={styles.backdrop}
         onClick={() => setQueueDrawer(false)}
         aria-hidden
       />
       <aside
-        className={`${styles.drawer}${isOpen ? ' ' + styles.open : ''}`}
+        ref={panelRef}
+        className={styles.drawer}
         aria-label="Play queue"
         aria-hidden={!isOpen}
       >
@@ -55,7 +67,7 @@ export default function QueueDrawer() {
                 className={`${styles.item}${isCurrent ? ' ' + styles.current : ''}${
                   isDragging ? ' ' + styles.dragging : ''
                 }`}
-                draggable
+                draggable={reorderArmed}
                 onDragStart={() => setDragIndex(idx)}
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -71,10 +83,17 @@ export default function QueueDrawer() {
                 onDragEnd={() => {
                   setDragIndex(null);
                   setOverIndex(null);
+                  setReorderArmed(false);
                 }}
                 onDoubleClick={() => playQueue(queue, idx)}
               >
-                <span className={styles.handle} aria-hidden>
+                <span
+                  className={styles.handle}
+                  data-no-sheet-drag
+                  onPointerDown={() => setReorderArmed(true)}
+                  onPointerUp={() => setReorderArmed(false)}
+                  aria-hidden
+                >
                   <DragIcon size={14} />
                 </span>
                 <div className={styles.cover}>

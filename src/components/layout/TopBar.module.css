@@ -6,10 +6,34 @@
   justify-content: flex-end;
   align-items: center;
   padding: 14px 24px;
-  background: linear-gradient(180deg, rgba(9, 9, 9, 0.7) 0%, rgba(9, 9, 9, 0.35) 60%, transparent 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   pointer-events: none;
+  background: transparent;
+}
+
+/* The scroll edge effect. No hard 1px divider: the material and its fade sit
+   on a masked layer *behind* the bar's content — masking the bar itself would
+   fade the button too — and it appears only once there is something scrolling
+   underneath to separate from. */
+.bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    180deg,
+    var(--glass-thick) 0%,
+    rgba(9, 9, 9, 0.35) 62%,
+    transparent 100%
+  );
+  backdrop-filter: var(--blur-thin);
+  -webkit-backdrop-filter: var(--blur-thin);
+  mask-image: linear-gradient(180deg, black 0%, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, black 0%, black 60%, transparent 100%);
+  transition: opacity var(--dur-std) var(--ease);
+}
+.bar.scrolled::before {
+  opacity: 1;
 }
 .bar > * {
   pointer-events: auto;
@@ -20,16 +44,22 @@
   align-items: center;
   gap: 10px;
   padding: 5px 12px 5px 5px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  background: var(--glass-thin);
+  backdrop-filter: var(--blur-thin);
+  -webkit-backdrop-filter: var(--blur-thin);
+  border: 1px solid var(--glass-edge);
   border-radius: 999px;
-  transition: background var(--dur-micro) var(--ease), border-color var(--dur-micro) var(--ease);
+  transition: background var(--dur-micro) var(--ease), border-color var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
   max-width: 240px;
 }
 .profileBtn:hover,
 .profileBtn.open {
   background: var(--bg-overlay);
   border-color: var(--border-default);
+}
+.profileBtn:active {
+  transform: scale(0.97);
 }
 
 .avatar {
@@ -41,13 +71,13 @@
   display: grid;
   place-items: center;
   font-weight: 600;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   letter-spacing: 0.5px;
   flex-shrink: 0;
 }
 
 .username {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -71,12 +101,16 @@
   top: calc(100% + 6px);
   right: 0;
   min-width: 260px;
-  background: var(--bg-overlay);
-  border: 1px solid var(--border-default);
+  background: var(--glass-thin);
+  backdrop-filter: var(--blur-thin);
+  -webkit-backdrop-filter: var(--blur-thin);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius-md);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--shadow-chip);
   padding: 6px;
-  animation: fade-in var(--dur-micro) var(--ease) both;
+  /* Anchored to the button that opened it, not to its own centre. */
+  transform-origin: top right;
+  animation: material-in var(--dur-std) var(--ease) both;
 }
 
 .serverBlock {
@@ -85,7 +119,7 @@
   margin-bottom: 6px;
 }
 .serverLabel {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   text-transform: uppercase;
   letter-spacing: 0.7px;
   color: var(--text-tertiary);
@@ -94,13 +128,13 @@
   font-weight: 500;
 }
 .serverName {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-primary);
   word-break: break-all;
 }
 .serverHint {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-tertiary);
   margin-top: 4px;
 }
@@ -113,12 +147,16 @@
   text-align: left;
   padding: 9px 12px;
   border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-primary);
   transition: background var(--dur-micro) var(--ease);
 }
 .menuItem:hover {
   background: var(--bg-surface);
+}
+.menuItem:active {
+  background: var(--bg-overlay);
+  transform: scale(0.985);
 }
 .menuItem.danger {
   color: var(--accent);

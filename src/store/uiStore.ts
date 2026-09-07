@@ -38,9 +38,16 @@ interface UiStore {
   sidebarWidth: number;
   lastExpandedWidth: number;
   backdropImageUrl: string | undefined;
+  /**
+   * Viewport point the fullscreen player was opened from. Things should
+   * emerge from where they came, so the overlay scales out of the artwork the
+   * user actually clicked rather than out of the middle of the screen.
+   */
+  fullscreenOrigin: { x: number; y: number } | null;
   setSidebarWidth: (px: number) => void;
   toggleSidebar: () => void;
   setBackdropImageUrl: (url: string | undefined) => void;
+  setFullscreenOrigin: (origin: { x: number; y: number } | null) => void;
 }
 
 export const SIDEBAR_BOUNDS = { min: SIDEBAR_MIN, max: SIDEBAR_MAX, threshold: COLLAPSED_THRESHOLD };
@@ -51,7 +58,9 @@ export const useUiStore = create<UiStore>((set, get) => {
     sidebarWidth: initial.sidebarWidth,
     lastExpandedWidth: initial.lastExpandedWidth,
     backdropImageUrl: undefined,
+    fullscreenOrigin: null,
     setBackdropImageUrl: (url) => set({ backdropImageUrl: url }),
+    setFullscreenOrigin: (origin) => set({ fullscreenOrigin: origin }),
     setSidebarWidth: (px) => {
       const w = clamp(px, SIDEBAR_MIN, SIDEBAR_MAX);
       const collapsed = w < COLLAPSED_THRESHOLD;

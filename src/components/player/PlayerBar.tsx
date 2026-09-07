@@ -5,6 +5,7 @@ import { usePlayerStore } from '@/store/playerStore';
 import { useAuthStore } from '@/store/authStore';
 import { formatDuration } from '@/lib/utils';
 import { useStarMutation } from '@/hooks/useStarMutation';
+import { useUiStore } from '@/store/uiStore';
 import { seekCurrent } from '@/lib/player';
 import {
   ExpandIcon,
@@ -52,6 +53,16 @@ export default function PlayerBar() {
   const isQueueOpen = usePlayerStore((s) => s.isQueueOpen);
   const isLyricsOpen = usePlayerStore((s) => s.isLyricsOpen);
   const toggleFullscreen = usePlayerStore((s) => s.toggleFullscreen);
+  const setFullscreenOrigin = useUiStore((s) => s.setFullscreenOrigin);
+
+  const coverRef = useRef<HTMLDivElement>(null);
+
+  // Anchor the fullscreen player to the artwork it grew out of.
+  const expand = () => {
+    const r = coverRef.current?.getBoundingClientRect();
+    if (r) setFullscreenOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+    toggleFullscreen();
+  };
 
   const star = useStarMutation();
 
@@ -80,12 +91,13 @@ export default function PlayerBar() {
         {song ? (
           <>
             <div
+              ref={coverRef}
               className={styles.cover}
-              onClick={toggleFullscreen}
+              onClick={expand}
               role="button"
               tabIndex={0}
               aria-label="Open now playing"
-              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleFullscreen()}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && expand()}
             >
               {cover ? <img src={cover} alt="" loading="lazy" /> : null}
               <span className={styles.expandHint}>

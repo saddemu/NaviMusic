@@ -27,7 +27,7 @@ function PageFallback() {
         display: 'grid',
         placeItems: 'center',
         color: 'var(--text-tertiary)',
-        fontSize: 13,
+        fontSize: '0.8125rem',
       }}
     >
       Loading…

@@ -18,6 +18,10 @@ interface Props {
 export default function ContextMenu({ items, position, onClose }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(position);
+  // Where the click landed, relative to the menu's own box. The menu scales
+  // out of that point, so it visibly comes from the thing that summoned it
+  // rather than from its own centre.
+  const [origin, setOrigin] = useState({ x: 0, y: 0 });
 
   useLayoutEffect(() => {
     if (!ref.current) return;
@@ -26,7 +30,10 @@ export default function ContextMenu({ items, position, onClose }: Props) {
     let y = position.y;
     if (x + r.width > window.innerWidth - 8) x = window.innerWidth - r.width - 8;
     if (y + r.height > window.innerHeight - 8) y = window.innerHeight - r.height - 8;
-    setPos({ x: Math.max(8, x), y: Math.max(8, y) });
+    x = Math.max(8, x);
+    y = Math.max(8, y);
+    setPos({ x, y });
+    setOrigin({ x: position.x - x, y: position.y - y });
   }, [position]);
 
   useEffect(() => {
@@ -44,7 +51,11 @@ export default function ContextMenu({ items, position, onClose }: Props) {
     <div
       ref={ref}
       className={styles.menu}
-      style={{ left: pos.x, top: pos.y }}
+      style={{
+        left: pos.x,
+        top: pos.y,
+        transformOrigin: `${origin.x}px ${origin.y}px`,
+      }}
       role="menu"
       onClick={(e) => e.stopPropagation()}
     >

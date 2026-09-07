@@ -4,6 +4,7 @@ import { getAlbum, getAlbumList2, getGenres, getSongsByGenre } from '@/lib/subso
 import { useAuthStore } from '@/store/authStore';
 import { usePlayerStore } from '@/store/playerStore';
 import type { Song } from '@/types/subsonic';
+import { PlayIcon, ShuffleIcon } from '../ui/Icon';
 import TrackRow from '../ui/TrackRow';
 import PageHeader from '../ui/PageHeader';
 import styles from './Songs.module.css';
@@ -23,6 +24,7 @@ interface SongsPage {
 export default function Songs() {
   const config = useAuthStore((s) => s.config);
   const playQueue = usePlayerStore((s) => s.playQueue);
+  const playShuffled = usePlayerStore((s) => s.playShuffled);
 
   const [sortKey, setSortKey] = useState<SortKey>('title');
   const [sortAsc, setSortAsc] = useState(true);
@@ -87,13 +89,15 @@ export default function Songs() {
     const el = containerRef.current;
     if (!el) return;
     const onScroll = () => setScrollTop(el.scrollTop);
-    const onResize = () => setViewportHeight(el.clientHeight);
-    setViewportHeight(el.clientHeight);
     el.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
+    // The list mounts empty, so a single clientHeight read here returns 0 and
+    // the window would stay stuck at OVERSCAN rows forever. Observe the box.
+    const ro = new ResizeObserver(() => setViewportHeight(el.clientHeight));
+    ro.observe(el);
+    setViewportHeight(el.clientHeight);
     return () => {
       el.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
+      ro.disconnect();
     };
   }, []);
 
@@ -114,30 +118,44 @@ export default function Songs() {
   };
 
   return (
-    <div className={styles.page} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className={styles.page}>
       <PageHeader
         title="Songs"
         subtitle={hasNextPage ? `${sorted.length} songs…` : `${sorted.length} songs`}
         actions={
-        <select
-          value={genreFilter}
-          onChange={(e) => setGenreFilter(e.target.value)}
-          style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-sm)',
-            padding: '8px 12px',
-            color: 'var(--text-primary)',
-          }}
-        >
-          <option value="">All genres</option>
-          {genres.data?.map((g) => (
-            <option key={g.value} value={g.value}>
-              {g.value}
-            </option>
-          ))}
-        </select>
-      } />
+          <>
+            <button
+              className={styles.playBtn}
+              onClick={() => playQueue(sorted, 0)}
+              disabled={sorted.length === 0}
+              type="button"
+            >
+              <PlayIcon size={16} /> Play
+            </button>
+            <button
+              className={styles.shuffleBtn}
+              onClick={() => playShuffled(sorted)}
+              disabled={sorted.length === 0}
+              type="button"
+            >
+              <ShuffleIcon size={16} /> Shuffle
+            </button>
+            <select
+              className={styles.genreSelect}
+              value={genreFilter}
+              onChange={(e) => setGenreFilter(e.target.value)}
+              aria-label="Filter by genre"
+            >
+              <option value="">All genres</option>
+              {genres.data?.map((g) => (
+                <option key={g.value} value={g.value}>
+                  {g.value}
+                </option>
+              ))}
+            </select>
+          </>
+        }
+      />
       <div className={styles.tableHead}>
         <span>#</span>
         <button onClick={() => setSort('title')} type="button">
@@ -156,11 +174,7 @@ export default function Songs() {
         <span></span>
         <span></span>
       </div>
-      <div
-        ref={containerRef}
-        className={styles.virtual}
-        style={{ flex: 1, overflowY: 'auto' }}
-      >
+      <div ref={containerRef} className={styles.virtual}>
         <div style={{ height: totalHeight, position: 'relative' }} className={styles.viewport}>
           <div
             style={{ position: 'absolute', top: startIndex * ROW_HEIGHT, left: 0, right: 0 }}

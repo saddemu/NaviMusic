@@ -1,15 +1,11 @@
+/* Opacity is written by the sheet gesture every frame — see QueueDrawer. */
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.4);
   z-index: 100;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--dur-std) var(--ease);
-}
-.backdrop.open {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .drawer {
@@ -19,16 +15,17 @@
   height: calc(100dvh - var(--player-height));
   width: 380px;
   max-width: 90vw;
-  background: var(--bg-raised);
-  border-left: 1px solid var(--border-subtle);
+  background: var(--glass-regular);
+  backdrop-filter: var(--blur-regular);
+  -webkit-backdrop-filter: var(--blur-regular);
+  border-left: 1px solid var(--glass-edge);
+  box-shadow: var(--shadow-pane);
   z-index: 110;
-  transform: translateX(100%);
-  transition: transform var(--dur-layout) var(--ease);
   display: flex;
   flex-direction: column;
-}
-.drawer.open {
-  transform: translateX(0);
+  transform: translateX(var(--sheet-offset, 100%));
+  will-change: transform;
+  touch-action: pan-y;
 }
 
 .header {
@@ -37,14 +34,18 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--glass-edge-soft);
+  cursor: grab;
+}
+.header:active {
+  cursor: grabbing;
 }
 .titleBlock {
   min-width: 0;
 }
 .titleBlock h2 {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0;
@@ -53,7 +54,7 @@
   text-overflow: ellipsis;
 }
 .subtitle {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-tertiary);
   white-space: nowrap;
   overflow: hidden;
@@ -72,6 +73,10 @@
   color: var(--text-primary);
   background: var(--bg-surface);
 }
+.iconBtn:active {
+  transform: scale(0.92);
+  background: var(--bg-overlay);
+}
 
 .body {
   flex: 1;
@@ -82,7 +87,7 @@
 }
 
 .line {
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1.55;
   padding: 6px 0;
   color: var(--text-tertiary);
@@ -92,6 +97,9 @@
 }
 .line:hover {
   color: var(--text-secondary);
+}
+.line:active {
+  color: var(--text-primary);
 }
 .line.active {
   color: var(--text-primary);
@@ -107,15 +115,15 @@
   padding: 60px 20px;
   text-align: center;
   color: var(--text-tertiary);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-style: italic;
 }
 
 .unsyncedHint {
   padding: 10px 22px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-tertiary);
-  letter-spacing: 0.4px;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--glass-edge-soft);
 }

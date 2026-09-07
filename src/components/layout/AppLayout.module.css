@@ -1,20 +1,38 @@
 .shell {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
-  grid-template-rows: 1fr var(--player-height);
   height: 100dvh;
   width: 100vw;
   background: var(--bg-base);
+  position: relative;
+  isolation: isolate;
   transition: grid-template-columns var(--dur-std) var(--ease);
+}
+
+/* The backdrop sits behind the whole shell, not just the content column, so
+   the sidebar and the player are panes of glass over the artwork rather than
+   opaque strips bolted to the edges. */
+.backdropLayer {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 .sidebar {
   grid-column: 1;
-  grid-row: 1 / span 1;
-  border-right: 1px solid var(--border-subtle);
-  background: var(--bg-base);
+  grid-row: 1;
   position: relative;
+  z-index: 1;
+  border-right: 1px solid var(--glass-edge-soft);
+  background: var(--glass-regular);
+  backdrop-filter: var(--blur-regular);
+  -webkit-backdrop-filter: var(--blur-regular);
+  padding-bottom: var(--player-height);
   overflow: hidden;
+  /* Scope the layout work the width transition causes to this subtree. */
+  contain: layout paint;
 }
 
 .mainCol {
@@ -24,8 +42,7 @@
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  isolation: isolate;
-  background: var(--bg-base);
+  z-index: 1;
 }
 
 .main {
@@ -33,19 +50,31 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  z-index: 1;
+  /* Content scrolls through the strip the player floats over, then stops
+     clear of it — the glass always has something moving behind it, and the
+     last row is still reachable. */
+  padding-bottom: var(--player-height);
+  scroll-padding-bottom: var(--player-height);
 }
 
 .player {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  border-top: 1px solid var(--border-subtle);
-  background: var(--bg-raised);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--player-height);
+  z-index: 90;
+  border-top: 1px solid var(--glass-edge);
+  background: var(--glass-thick);
+  backdrop-filter: var(--blur-thick);
+  -webkit-backdrop-filter: var(--blur-thick);
 }
 
 .routeFade {
   animation: fade-in var(--dur-layout) var(--ease) both;
-  min-height: 100%;
+  /* Real height, not min-height: pages that own their own scroll container
+     (Songs) need a percentage height to resolve against something. */
+  height: 100%;
 }
 
 /* While dragging the sidebar resizer, suppress transition + show grab cursor */

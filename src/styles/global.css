@@ -13,10 +13,31 @@
   --accent-glow: rgba(252, 60, 68, 0.3);
   --success: #2dd36f;
   --danger: #fc3c44;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
+
+  /* --- Materials ---------------------------------------------------------
+     Translucent layers, in three weights. Heavier material separates
+     structural regions (the player, the sidebar); lighter material draws
+     attention to things you act on (menus, toasts). Never stack a light
+     material on another light one — legibility collapses. Bigger surfaces
+     read as thicker: more blur, deeper shadow.
+     Both halves are tokens so `prefers-reduced-transparency` can turn the
+     whole system solid in one place. */
+  --glass-thin: rgba(34, 34, 40, 0.55);
+  --glass-regular: rgba(17, 17, 19, 0.62);
+  --glass-thick: rgba(9, 9, 9, 0.72);
+  --blur-thin: saturate(180%) blur(20px);
+  --blur-regular: saturate(180%) blur(32px);
+  --blur-thick: saturate(200%) blur(48px);
+  /* The bright edge where light catches the top of a pane of glass. */
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --glass-edge-soft: rgba(255, 255, 255, 0.06);
+  --shadow-pane: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --shadow-chip: 0 12px 28px rgba(0, 0, 0, 0.45);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.125rem;
+  --radius-xl: 1.5rem;
   --sidebar-width: 236px;
   --player-height: 88px;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -24,8 +45,17 @@
   --dur-std: 220ms;
   --dur-layout: 350ms;
 
+  /* --- Type -------------------------------------------------------------
+     One family; the display/body split is carried by tracking and weight,
+     not by a second typeface. Tracking is size-specific on purpose: large
+     text needs negative tracking as it grows, small text needs a little
+     positive tracking to stay legible, and body copy sits at zero. */
   --font-display: 'DM Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-body: 'DM Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --tracking-display: -0.025em;
+  --tracking-title: -0.015em;
+  --tracking-body: 0;
+  --tracking-caps: 0.06em;
 
   color-scheme: dark;
 }
@@ -45,17 +75,23 @@ body,
   width: 100%;
 }
 
+/* Everything sizes off the root, so the reader's own text-size preference
+   scales the interface instead of being overridden by it. */
+html {
+  font-size: 100%;
+}
+
 body {
   font-family: var(--font-body);
   background: var(--bg-base);
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 1.55;
   font-weight: 450;
   font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1;
   -webkit-font-smoothing: subpixel-antialiased;
   text-rendering: optimizeLegibility;
-  letter-spacing: -0.005em;
+  letter-spacing: var(--tracking-body);
   overflow: hidden;
 }
 
@@ -102,10 +138,12 @@ img {
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
-  border: 2px solid var(--bg-base);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.18);
+  background-clip: padding-box;
 }
 
 :focus-visible {
@@ -126,18 +164,27 @@ img {
   border: 0;
 }
 
+/* Vibrancy: text sitting on a translucent surface needs a touch more weight
+   and tracking than text on a solid one, or the blurred background eats it. */
+.pm-vibrant {
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
 /* Custom range input — used by progress + volume sliders */
 input[type='range'].pm-range {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 14px;
+  height: 18px;
   background: transparent;
   cursor: pointer;
+  --track-h: 4px;
   --progress: 0%;
 }
 input[type='range'].pm-range::-webkit-slider-runnable-track {
-  height: 4px;
+  height: var(--track-h);
   background: linear-gradient(
     to right,
     var(--text-primary) 0%,
@@ -146,15 +193,16 @@ input[type='range'].pm-range::-webkit-slider-runnable-track {
     rgba(255, 255, 255, 0.18) 100%
   );
   border-radius: 999px;
-  transition: height var(--dur-micro) var(--ease);
+  transition: height var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
 }
 input[type='range'].pm-range::-moz-range-track {
-  height: 4px;
+  height: var(--track-h);
   background: rgba(255, 255, 255, 0.18);
   border-radius: 999px;
+  transition: height var(--dur-micro) var(--ease);
 }
 input[type='range'].pm-range::-moz-range-progress {
-  height: 4px;
+  height: var(--track-h);
   background: var(--text-primary);
   border-radius: 999px;
 }
@@ -166,9 +214,10 @@ input[type='range'].pm-range::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--text-primary);
   border: 0;
-  margin-top: -4px;
+  margin-top: calc((var(--track-h) - 12px) / 2);
   opacity: 0;
-  transition: opacity var(--dur-micro) var(--ease);
+  transform: scale(0.6);
+  transition: opacity var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
 }
 input[type='range'].pm-range::-moz-range-thumb {
   height: 12px;
@@ -177,15 +226,30 @@ input[type='range'].pm-range::-moz-range-thumb {
   background: var(--text-primary);
   border: 0;
   opacity: 0;
-  transition: opacity var(--dur-micro) var(--ease);
+  transform: scale(0.6);
+  transition: opacity var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+}
+/* The track thickens under the pointer — the affordance grows toward the
+   finger instead of only revealing a dot. */
+input[type='range'].pm-range:hover,
+input[type='range'].pm-range:focus-visible,
+input[type='range'].pm-range:active {
+  --track-h: 6px;
 }
 input[type='range'].pm-range:hover::-webkit-slider-thumb,
-input[type='range'].pm-range:focus-visible::-webkit-slider-thumb {
+input[type='range'].pm-range:focus-visible::-webkit-slider-thumb,
+input[type='range'].pm-range:active::-webkit-slider-thumb {
   opacity: 1;
+  transform: scale(1);
 }
 input[type='range'].pm-range:hover::-moz-range-thumb,
-input[type='range'].pm-range:focus-visible::-moz-range-thumb {
+input[type='range'].pm-range:focus-visible::-moz-range-thumb,
+input[type='range'].pm-range:active::-moz-range-thumb {
   opacity: 1;
+  transform: scale(1);
+}
+input[type='range'].pm-range:active::-webkit-slider-thumb {
+  transform: scale(1.25);
 }
 input[type='range'].pm-range:hover::-webkit-slider-runnable-track {
   background: linear-gradient(
@@ -196,13 +260,18 @@ input[type='range'].pm-range:hover::-webkit-slider-runnable-track {
     rgba(255, 255, 255, 0.18) 100%
   );
 }
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-    animation: none !important;
+/* Without hover there is no way to discover the handle, so it is always out. */
+@media (hover: none) {
+  input[type='range'].pm-range {
+    --track-h: 6px;
+  }
+  input[type='range'].pm-range::-webkit-slider-thumb {
+    opacity: 1;
+    transform: scale(1);
+  }
+  input[type='range'].pm-range::-moz-range-thumb {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -223,6 +292,30 @@ input[type='range'].pm-range:hover::-webkit-slider-runnable-track {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Glass arrives as a material: the blur and the scale resolve together, so it
+   reads as a pane settling into place rather than a rectangle fading up. */
+@keyframes material-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes material-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
   }
 }
 
@@ -252,4 +345,98 @@ input[type='range'].pm-range:hover::-webkit-slider-runnable-track {
 .sb-resize:hover::after,
 .sb-resize.dragging::after {
   background: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility preferences.
+
+   Reduced motion is not "no feedback" — it is a gentler, non-vestibular
+   equivalent. Travel and overshoot go; opacity and colour changes stay,
+   because they are what tells the user something happened. The spring
+   animator checks the same query in JS and snaps instead of integrating.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-micro: 80ms;
+    --dur-std: 120ms;
+    --dur-layout: 140ms;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes material-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes material-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes shimmer {
+    0%,
+    100% {
+      background-position: 0 0;
+    }
+  }
+
+  /* Kill travel and scaling, keep the fades above. The looping keyframes that
+     mattered (`shimmer`) are redefined static up there; `spin` is left alone
+     on purpose — a progress indicator that stops turning is a broken one. */
+  *,
+  *::before,
+  *::after {
+    transition-property: opacity, color, background-color, border-color, box-shadow, fill,
+      stroke, backdrop-filter, filter !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Frosted surfaces go solid rather than merely less blurred: a weak blur is
+   the worst of both worlds. Every material is a token, so this is the only
+   place that has to know. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-thin: var(--bg-overlay);
+    --glass-regular: var(--bg-raised);
+    --glass-thick: var(--bg-base);
+    --blur-thin: none;
+    --blur-regular: none;
+    --blur-thick: none;
+    --glass-edge: var(--border-default);
+    --glass-edge-soft: var(--border-subtle);
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --text-secondary: rgba(242, 242, 245, 0.82);
+    --text-tertiary: rgba(242, 242, 245, 0.62);
+    --border-subtle: rgba(255, 255, 255, 0.22);
+    --border-default: rgba(255, 255, 255, 0.38);
+    --glass-thin: rgba(24, 24, 28, 0.96);
+    --glass-regular: rgba(14, 14, 16, 0.97);
+    --glass-thick: rgba(6, 6, 6, 0.98);
+    --glass-edge: rgba(255, 255, 255, 0.38);
+    --glass-edge-soft: rgba(255, 255, 255, 0.22);
+  }
+  :focus-visible {
+    outline-width: 3px;
+  }
 }

@@ -1,3 +1,16 @@
+/* Dims the app behind the sheet. Its opacity is written by the gesture every
+   frame, so the room darkens exactly as far as the sheet has risen. */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 195;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: saturate(120%) blur(4px);
+  -webkit-backdrop-filter: saturate(120%) blur(4px);
+  opacity: 0;
+  pointer-events: none;
+}
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -6,7 +19,30 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   isolation: isolate;
-  animation: fade-in var(--dur-layout) var(--ease) both;
+  overflow: hidden;
+  /* Grows out of the artwork it was opened from, and returns there. Scale and
+     opacity are coupled to the same 0..1 the drag produces, so dragging the
+     sheet down shrinks and fades it exactly as far as the finger has gone. */
+  transform-origin: var(--origin-x, 50%) var(--origin-y, 100%);
+  transform: translateY(var(--sheet-offset, 100%))
+    scale(calc(0.9 + 0.1 * var(--sheet-p, 0)));
+  opacity: var(--sheet-p, 0);
+  border-radius: calc((1 - var(--sheet-p, 0)) * var(--radius-xl));
+  will-change: transform, opacity;
+  touch-action: none;
+}
+
+/* The grab affordance, and a hint that this surface is draggable at all. */
+.grabber {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  translate: -50% 0;
+  width: 44px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  z-index: 3;
 }
 .bgLayer {
   position: absolute;
@@ -36,13 +72,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
+  padding: 22px 24px 18px;
+  cursor: grab;
+}
+.topBar:active {
+  cursor: grabbing;
 }
 .eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   text-transform: uppercase;
-  letter-spacing: 1.4px;
-  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-caps);
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 .topBarRight {
   display: flex;
@@ -55,8 +96,10 @@
   display: grid;
   place-items: center;
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--glass-thin);
+  backdrop-filter: var(--blur-thin);
+  -webkit-backdrop-filter: var(--blur-thin);
+  border: 1px solid var(--glass-edge);
   border-radius: 50%;
   transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
@@ -64,6 +107,10 @@
 .iconBtn:hover {
   background: rgba(255, 255, 255, 0.16);
   transform: scale(1.05);
+}
+.iconBtn:active {
+  transform: scale(0.93);
+  background: rgba(255, 255, 255, 0.22);
 }
 .iconBtnActive {
   color: var(--accent);
@@ -116,20 +163,22 @@
 }
 .songTitle {
   font-family: var(--font-display);
-  font-size: 44px;
+  font-size: 2.75rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: var(--tracking-display);
   line-height: 1.05;
   margin: 0;
 }
 .artistName {
-  font-size: 16px;
+  font-size: 1rem;
   color: var(--text-secondary);
 }
 .lyricsBox {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  /* The sheet claims vertical drags; this column keeps its own. */
+  touch-action: pan-y;
   padding-right: 8px;
   scroll-behavior: smooth;
   mask-image: linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%);
@@ -139,7 +188,7 @@
   display: none;
 }
 .lyricLine {
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1.55;
   padding: 6px 0;
   color: var(--text-tertiary);
@@ -161,7 +210,7 @@
   color: var(--text-tertiary);
 }
 .synced .lyricLine {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.45);
   padding: 8px 0;
@@ -171,14 +220,14 @@
 }
 .synced .lyricLine.active {
   color: #fff;
-  font-size: 26px;
+  font-size: 1.625rem;
   line-height: 1.25;
   font-weight: 700;
   letter-spacing: -0.01em;
   transform: scale(1);
 }
 .noLyricsHint {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-tertiary);
   font-style: italic;
 }
@@ -190,6 +239,11 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  /* A heavier pane under the transport: the controls stay legible whatever
+     the artwork behind them is doing. */
+  background: linear-gradient(180deg, transparent 0%, var(--glass-thick) 45%);
+  backdrop-filter: var(--blur-thin);
+  -webkit-backdrop-filter: var(--blur-thin);
 }
 .metaCenter {
   text-align: center;
@@ -210,11 +264,16 @@
   place-items: center;
   color: var(--text-secondary);
   border-radius: 50%;
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
+  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
 }
 .ctrl:hover {
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.06);
+}
+.ctrl:active {
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.12);
 }
 .playBtn {
   width: 64px;
@@ -229,6 +288,9 @@
 .playBtn:hover {
   transform: scale(1.06);
 }
+.playBtn:active {
+  transform: scale(0.95);
+}
 .progressRow {
   display: flex;
   align-items: center;
@@ -239,7 +301,7 @@
 }
 .time {
   font-variant-numeric: tabular-nums;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-tertiary);
   min-width: 40px;
   text-align: center;

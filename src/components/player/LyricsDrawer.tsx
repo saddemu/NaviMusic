@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useSheetGesture } from '@/hooks/useSheetGesture';
 import { usePlayerStore } from '@/store/playerStore';
 import { useLyrics, activeLineIndex } from '@/hooks/useLyrics';
 import { seekCurrent } from '@/lib/player';
@@ -18,6 +19,12 @@ export default function LyricsDrawer() {
 
   const activeIdx = activeLineIndex(lyrics ?? null, progress);
 
+  const { panelRef, backdropRef } = useSheetGesture<HTMLElement, HTMLDivElement>({
+    open: isOpen,
+    onClose: () => setOpen(false),
+    axis: 'x',
+  });
+
   // Scroll the active line into view
   useEffect(() => {
     if (!isOpen || activeIdx < 0) return;
@@ -28,12 +35,14 @@ export default function LyricsDrawer() {
   return (
     <>
       <div
-        className={`${styles.backdrop}${isOpen ? ' ' + styles.open : ''}`}
+        ref={backdropRef}
+        className={styles.backdrop}
         onClick={() => setOpen(false)}
         aria-hidden
       />
       <aside
-        className={`${styles.drawer}${isOpen ? ' ' + styles.open : ''}`}
+        ref={panelRef}
+        className={styles.drawer}
         aria-label="Lyrics"
         aria-hidden={!isOpen}
       >

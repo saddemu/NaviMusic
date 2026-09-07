@@ -25,6 +25,11 @@
   transform: scale(1.03);
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-default);
 }
+/* The press is the moment to answer, not the release. */
+.card:active .cover {
+  transform: scale(0.98);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+}
 .playOverlay {
   position: absolute;
   right: 10px;
@@ -41,12 +46,23 @@
   transition: opacity var(--dur-std) var(--ease), transform var(--dur-std) var(--ease);
   box-shadow: 0 8px 16px var(--accent-glow);
 }
-.card:hover .playOverlay {
+.card:hover .playOverlay,
+.card:focus-within .playOverlay {
   opacity: 1;
   transform: translateY(0);
 }
+.playOverlay:active {
+  transform: scale(0.9);
+}
+/* Touch never hovers, so the play affordance has to be there already. */
+@media (hover: none) {
+  .playOverlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .title {
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -54,7 +70,7 @@
   color: var(--text-primary);
 }
 .subtitle {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
