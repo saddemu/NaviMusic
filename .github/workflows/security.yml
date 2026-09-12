@@ -13,14 +13,20 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   audit:
     name: npm audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
           cache: npm
@@ -37,10 +43,11 @@ jobs:
     name: Secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Full clone: the scan covers every commit, not just the push range.
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install gitleaks
         env:
