@@ -64,6 +64,16 @@ third-party requests of any kind. You can verify this in your browser's network 
   in runtime dependencies and on high or critical advisories in build tooling, on every
   push and again weekly on a schedule. CodeQL (`security-extended`) and a full-history
   secret scan run on the same cadence. Dependabot opens upgrade pull requests weekly.
+- `main` is protected by a repository ruleset: no force pushes, no deletion,
+  changes arrive through a pull request, and five checks must pass before a
+  merge (lint/typecheck/build, Docker build, npm audit, secret scan, CodeQL).
+  Release tags are immutable. Commits on `main` are signed and the ruleset
+  requires a verified signature.
+- CI itself is treated as attack surface: every action is pinned to a commit
+  SHA (the repository rejects unpinned ones), only GitHub-owned actions are
+  allowed, the workflow token is read-only, checkouts do not persist
+  credentials, and the container base image is pinned by digest. Workflows on
+  pull requests from forks need explicit approval.
 - Container: non-root user, read-only filesystem, `no-new-privileges`, bound to
   `127.0.0.1`. TLS, HSTS, CSP, and rate limiting belong to the reverse proxy — see the
   example server block in the [README](README.md#deployment).

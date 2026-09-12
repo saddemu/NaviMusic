@@ -238,6 +238,12 @@ House rules that CI and ESLint enforce: no `any`, no `dangerouslySetInnerHTML`
 without DOMPurify, no ad-hoc `fetch()` to the music server, no third-party runtime
 requests, and exact dependency versions (no `^` or `~`).
 
+`main` takes changes only through a pull request, and five checks have to pass
+before a merge: lint/typecheck/build, the Docker image build, `npm audit`, a
+full-history secret scan, and CodeQL. Commits on `main` carry a verified
+signature — `git config gpg.format ssh` with an SSH signing key registered on
+your account is enough, no GPG needed.
+
 ---
 
 ## License
