@@ -2,17 +2,30 @@ version: 2
 updates:
   # Application dependencies. Versions are pinned exactly (no ^ or ~ ranges),
   # so every upgrade arrives as a reviewable pull request.
+  #
+  # Major bumps are ignored here on purpose: they need a migration pass, not a
+  # merge button. Dependabot *security* updates ignore these filters, so a CVE
+  # still opens a pull request whatever the semver jump — and the Security
+  # workflow fails the build if one is ever left unpatched.
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
       day: monday
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     versioning-strategy: increase
     labels:
       - dependencies
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - version-update:semver-major
     groups:
-      # Build/lint tooling churns often and never ships to the browser.
+      runtime:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
       dev-tooling:
         dependency-type: development
         update-types:
@@ -27,6 +40,10 @@ updates:
     labels:
       - dependencies
       - ci
+    groups:
+      actions:
+        patterns:
+          - '*'
 
   - package-ecosystem: docker
     directory: /
@@ -36,3 +53,9 @@ updates:
     labels:
       - dependencies
       - docker
+    ignore:
+      # Node major bumps change the runtime under the static server; do those
+      # deliberately, together with the engines requirement in the README.
+      - dependency-name: node
+        update-types:
+          - version-update:semver-major
