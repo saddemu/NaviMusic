@@ -199,6 +199,7 @@ export default function Songs() {
             ))}
           </div>
         </div>
+        <div className={styles.listSpacer} />
       </div>
     </div>
   );

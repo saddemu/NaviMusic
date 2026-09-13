@@ -1,5 +1,5 @@
 .page {
-  padding: 0 0 40px;
+  padding: 0 0 var(--content-bottom);
 }
 .body {
   padding: 16px var(--gutter);

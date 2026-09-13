@@ -34,10 +34,17 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 var(--gutter) 40px;
+  padding: 0 var(--gutter);
 }
 .viewport {
   position: relative;
+}
+
+/* The virtual sizer is taller than its scroll container, so the container's
+   own end padding cannot be relied on to appear after it. A real in-flow box
+   can. */
+.listSpacer {
+  height: var(--content-bottom);
 }
 
 .playBtn {

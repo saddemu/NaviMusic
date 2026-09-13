@@ -199,11 +199,32 @@
   color: var(--text-tertiary);
 }
 
+/* The wordmark only appears where the sidebar is not showing one. */
+.brandMobile {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .bar {
+    justify-content: space-between;
     /* Clears the notch in a standalone PWA, where the page owns the whole
        screen — `viewport-fit=cover` is set in index.html. */
     padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gutter) 10px;
+  }
+
+  .brandMobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: var(--tracking-title);
+    color: var(--text-primary);
+  }
+  .brandMobile svg {
+    color: var(--accent);
+    flex-shrink: 0;
   }
 
   .profileBtn {

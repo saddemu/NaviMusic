@@ -48,6 +48,13 @@
   /* The page gutter. One token so every page breathes the same amount, and
      narrowing the viewport narrows all of them together. */
   --gutter: 40px;
+  /* How much room a page has to leave at its bottom to clear the fixed chrome
+     — the player, and on a phone the tab bar and the home indicator too.
+     It is spent by the page's own content, never by padding on the scroll
+     container: a scroll container's end padding is not reliably added after
+     content that overflows it, which is exactly the case here (the route
+     wrapper is `height: 100%` and every long page overflows it). */
+  --content-bottom: calc(var(--player-height) + 32px);
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --dur-micro: 150ms;
   --dur-std: 220ms;
@@ -83,6 +90,7 @@
        A floor keeps the labels clear in both states, and in a standalone PWA
        the real inset is larger and wins. */
     --safe-bottom: max(env(safe-area-inset-bottom, 0px), 14px);
+    --content-bottom: calc(var(--player-height) + var(--tabbar-height) + var(--safe-bottom) + 24px);
   }
 }
 

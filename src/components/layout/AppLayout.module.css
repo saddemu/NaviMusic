@@ -52,9 +52,11 @@
   position: relative;
   /* Content scrolls through the strip the player floats over, then stops
      clear of it — the glass always has something moving behind it, and the
-     last row is still reachable. */
-  padding-bottom: var(--player-height);
-  scroll-padding-bottom: var(--player-height);
+     last row is still reachable. The stopping distance is spent by each
+     page's own bottom padding (`--content-bottom`), not by padding here: an
+     end padding on a scroll container is not reliably honoured once the
+     content overflows it. */
+  scroll-padding-bottom: var(--content-bottom);
 }
 
 .player {
@@ -108,12 +110,6 @@
   }
 
   .main {
-    /* The fixed chrome, plus a gap so the last card in a page stops clear of
-       the player's glass rather than touching it. */
-    padding-bottom: calc(var(--player-height) + var(--tabbar-height) + var(--safe-bottom) + 20px);
-    scroll-padding-bottom: calc(
-      var(--player-height) + var(--tabbar-height) + var(--safe-bottom) + 20px
-    );
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }
