@@ -273,8 +273,12 @@
     gap: 10px;
   }
 
-  .heart {
-    margin-left: 0;
+  /* Starring lives in the fullscreen player and the row context menu; down
+     here it is one more small target competing with the transport. `:has` so
+     the tooltip wrapper goes with it and does not leave its gap behind. */
+  .heart,
+  .left > *:has(> .heart) {
+    display: none;
   }
 
   /* Comfortable thumb targets: the two controls that survive get the room the
@@ -286,12 +290,5 @@
   .ctrl {
     width: 40px;
     height: 40px;
-  }
-}
-
-@media (max-width: 380px) {
-  /* Last thing to go before the title starts truncating to nothing. */
-  .heart {
-    display: none;
   }
 }

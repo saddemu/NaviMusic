@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { coverArtUrl, getAlbum } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 import { usePlayerStore } from '@/store/playerStore';
 import { useUiStore } from '@/store/uiStore';
 import { useStarMutation } from '@/hooks/useStarMutation';
@@ -16,6 +17,7 @@ import styles from './AlbumDetail.module.css';
 export default function AlbumDetail() {
   const { id } = useParams();
   const config = useAuthStore((s) => s.config);
+  const isMobile = useIsMobile();
   const playQueue = usePlayerStore((s) => s.playQueue);
   const playShuffled = usePlayerStore((s) => s.playShuffled);
   const setBackdropImageUrl = useUiStore((s) => s.setBackdropImageUrl);
@@ -138,14 +140,20 @@ export default function AlbumDetail() {
 
       <div className={styles.tracks}>
         <div className={styles.tracksHeader}>
-          <span>#</span>
+          {/* The track number is the first thing a phone can do without. */}
+          {!isMobile && <span>#</span>}
           <span>Title</span>
           <span style={{ textAlign: 'right' }}>Time</span>
           <span></span>
           <span></span>
         </div>
         {songs.map((song, i) => (
-          <TrackRow key={song.id} song={song} index={i + 1} onPlay={() => playQueue(songs, i)} />
+          <TrackRow
+            key={song.id}
+            song={song}
+            index={isMobile ? undefined : i + 1}
+            onPlay={() => playQueue(songs, i)}
+          />
         ))}
       </div>
     </div>
