@@ -1,3 +1,5 @@
+import { MOBILE_BREAKPOINT } from './constants';
+
 export function formatDuration(seconds: number | undefined): string {
   if (!seconds || !Number.isFinite(seconds)) return '0:00';
   const total = Math.max(0, Math.floor(seconds));
@@ -75,4 +77,13 @@ export function greeting(): string {
   if (h < 17) return 'Good afternoon';
   if (h < 22) return 'Good evening';
   return 'Good night';
+}
+
+/**
+ * Whether we are on a phone-sized screen. Deliberately not a hook: its only
+ * caller is artwork sizing, which does not need to re-render on resize — the
+ * image already downloaded stays perfectly good at the new size.
+ */
+export function isNarrowViewport(): boolean {
+  return typeof window !== 'undefined' && window.innerWidth <= MOBILE_BREAKPOINT;
 }

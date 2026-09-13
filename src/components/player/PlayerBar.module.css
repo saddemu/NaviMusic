@@ -206,3 +206,89 @@
 .volumeWrap input {
   flex: 1;
 }
+
+/* A hairline along the bar's top edge, standing in for the scrubber the phone
+   layout has no room for. Hidden on desktop, where the real slider is shown. */
+.miniProgress {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Phone. The bar drops to what a transport actually needs at this width:
+   artwork, what is playing, play and next. Shuffle, previous, repeat, volume,
+   lyrics, queue and the scrubber all live one tap away in the fullscreen
+   player, which the artwork opens.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .bar {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    padding: 0 var(--gutter) 0 10px;
+  }
+
+  .miniProgress {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .miniProgress span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  .right,
+  .progressRow {
+    display: none;
+  }
+
+  /* `:has` so the tooltip wrapper collapses with the button it holds —
+     hiding only the button would leave its gap behind. */
+  .wideOnly,
+  .controls > *:has(> .wideOnly) {
+    display: none;
+  }
+
+  .center {
+    max-width: none;
+    width: auto;
+    gap: 0;
+    justify-self: end;
+  }
+
+  .controls {
+    gap: 4px;
+  }
+
+  .cover {
+    width: 44px;
+    height: 44px;
+  }
+
+  .left {
+    gap: 10px;
+  }
+
+  /* Starring lives in the fullscreen player and the row context menu; down
+     here it is one more small target competing with the transport. `:has` so
+     the tooltip wrapper goes with it and does not leave its gap behind. */
+  .heart,
+  .left > *:has(> .heart) {
+    display: none;
+  }
+
+  /* Comfortable thumb targets: the two controls that survive get the room the
+     five of them used to share. */
+  .playBtn {
+    width: 44px;
+    height: 44px;
+  }
+  .ctrl {
+    width: 40px;
+    height: 40px;
+  }
+}

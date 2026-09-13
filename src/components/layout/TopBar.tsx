@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
+import { ping } from '@/lib/subsonic';
 import { getInitials } from '@/lib/utils';
-import { ChevronRight, LogoutIcon, SettingsIcon } from '../ui/Icon';
+import { BrandMark, ChevronRight, LogoutIcon, PulseIcon, SettingsIcon } from '../ui/Icon';
 import styles from './TopBar.module.css';
 
 interface Props {
   /** True once content has scrolled under the bar — see `.scrolled` in the CSS. */
   scrolled?: boolean;
 }
+
+/** Round-trip bands, in ms. Anything slower than `slow` reads as a bad link. */
+const PING_GOOD = 120;
+const PING_SLOW = 400;
 
 export default function TopBar({ scrolled = false }: Props) {
   const user = useAuthStore((s) => s.user);
@@ -18,6 +24,20 @@ export default function TopBar({ scrolled = false }: Props) {
 
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+
+  // Shares its cache key with the Settings page, so opening the menu after a
+  // test there shows the reading that test produced instead of repeating it.
+  const pingQuery = useQuery({
+    queryKey: ['ping'],
+    queryFn: async () => {
+      const t = performance.now();
+      await ping(config!);
+      return Math.round(performance.now() - t);
+    },
+    enabled: !!config && open,
+    staleTime: 15_000,
+    retry: false,
+  });
 
   useEffect(() => {
     if (!open) return;
@@ -37,8 +57,35 @@ export default function TopBar({ scrolled = false }: Props) {
 
   const serverHost = config ? new URL(config.serverUrl).host : '';
 
+  const latency = pingQuery.data;
+  const pingState = pingQuery.isFetching
+    ? 'pending'
+    : pingQuery.isError
+      ? 'down'
+      : latency === undefined
+        ? 'pending'
+        : latency <= PING_GOOD
+          ? 'good'
+          : latency <= PING_SLOW
+            ? 'slow'
+            : 'down';
+
+  const pingLabel = pingQuery.isFetching
+    ? 'Testing…'
+    : pingQuery.isError
+      ? 'Unreachable'
+      : latency === undefined
+        ? '—'
+        : `${latency} ms`;
+
   return (
     <div className={`${styles.bar}${scrolled ? ' ' + styles.scrolled : ''}`}>
+      {/* Phone only — the sidebar carries the wordmark at every other width.
+          The bar pads itself past the notch, so this sits clear of it. */}
+      <Link to="/" className={styles.brandMobile} aria-label="pMusic home">
+        <BrandMark size={20} />
+        <span>pMusic</span>
+      </Link>
       <div className={styles.wrap} ref={wrapRef}>
         <button
           className={`${styles.profileBtn}${open ? ' ' + styles.open : ''}`}
@@ -63,6 +110,22 @@ export default function TopBar({ scrolled = false }: Props) {
               <div className={styles.serverName}>{serverHost || '—'}</div>
               {config && <div className={styles.serverHint}>Signed in as {user?.username}</div>}
             </div>
+            {/* Not a link to anywhere — the row reports the round trip to the
+                server and re-measures it when pressed. */}
+            <button
+              className={styles.menuItem}
+              onClick={() => pingQuery.refetch()}
+              role="menuitem"
+              type="button"
+              disabled={!config || pingQuery.isFetching}
+            >
+              <PulseIcon size={16} />
+              Ping server
+              <span className={`${styles.pingValue} ${styles[pingState]}`}>
+                <span className={styles.pingDot} aria-hidden />
+                {pingLabel}
+              </span>
+            </button>
             <button
               className={styles.menuItem}
               onClick={() => {

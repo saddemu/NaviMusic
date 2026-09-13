@@ -28,3 +28,16 @@
   max-width: 420px;
   color: var(--text-secondary);
 }
+
+@media (max-width: 768px) {
+  .wrap {
+    padding: 48px var(--gutter);
+  }
+  .icon {
+    width: 64px;
+    height: 64px;
+  }
+  .title {
+    font-size: 1.25rem;
+  }
+}

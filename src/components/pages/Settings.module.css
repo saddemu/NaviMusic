@@ -1,9 +1,17 @@
 .page {
-  padding: 0 0 40px;
+  padding: 0 0 var(--content-bottom);
 }
+/* A single column of rows. On a wide window it centres rather than hugging
+   the left edge with an ocean of empty space beside it — the header rides the
+   same column so the two stay aligned. */
+.headerWrap,
 .body {
-  padding: 16px 40px;
   max-width: 720px;
+  margin-inline: auto;
+}
+
+.body {
+  padding: 16px var(--gutter);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -83,4 +91,25 @@
   align-items: center;
   gap: 7px;
   white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .row {
+    /* Label above control: 16px of padding either side leaves a select no
+       usable width when it has to share the line. */
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  /* Except the toggle, which is small enough to stay on the label's line. */
+  .row:has(> .toggle) {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .select,
+  .slider {
+    width: 100%;
+  }
 }

@@ -1,9 +1,9 @@
 .page {
-  padding-bottom: 40px;
+  padding-bottom: var(--content-bottom);
 }
 .hero {
   position: relative;
-  padding: 60px 40px 28px;
+  padding: 60px var(--gutter) 28px;
 }
 .eyebrow {
   font-size: 0.6875rem;
@@ -68,7 +68,7 @@
 .actions {
   display: flex;
   gap: 10px;
-  padding: 18px 40px 0;
+  padding: 18px var(--gutter) 0;
 }
 .shuffleBtn {
   display: inline-flex;
@@ -91,7 +91,7 @@
   cursor: not-allowed;
 }
 .section {
-  padding: 24px 40px 0;
+  padding: 24px var(--gutter) 0;
 }
 .section h2 {
   font-family: var(--font-display);
@@ -104,4 +104,39 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: 22px 18px;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 8px var(--gutter) 20px;
+  }
+  .title {
+    font-size: clamp(2.25rem, 12vw, 4.5rem);
+  }
+
+  .actions {
+    padding: 0 var(--gutter);
+  }
+  .shuffleBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section {
+    padding: 22px var(--gutter) 0;
+  }
+  .section h2 {
+    font-size: 1.25rem;
+  }
+
+  .albumGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 18px 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .albumGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

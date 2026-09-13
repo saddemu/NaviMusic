@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { coverArtUrl, getAlbum } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
+import { isNarrowViewport } from '@/lib/utils';
 import { usePlayerStore } from '@/store/playerStore';
 import type { Album } from '@/types/subsonic';
 import { PlayIcon } from './Icon';
@@ -19,7 +20,9 @@ function AlbumCardInner({ album, subtitle = 'artist' }: AlbumCardProps) {
   const queryClient = useQueryClient();
   const playQueue = usePlayerStore((s) => s.playQueue);
 
-  const cover = config ? coverArtUrl(config, album.coverArt, 360) : '';
+  // Cells are ~190px on a desktop grid and ~130px in the phone's; both ask
+  // for roughly 2x so the artwork still looks right on a dense screen.
+  const cover = config ? coverArtUrl(config, album.coverArt, isNarrowViewport() ? 240 : 360) : '';
 
   const onClick = () => navigate(`/album/${album.id}`);
 

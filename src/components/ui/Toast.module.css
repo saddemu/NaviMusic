@@ -48,3 +48,18 @@
 .toast.info::before {
   background: var(--text-secondary);
 }
+
+@media (max-width: 768px) {
+  /* Above the player and the tab bar, and full-bleed rather than a card
+     floating in a corner there is no room for. */
+  .viewport {
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: calc(var(--player-height) + var(--tabbar-height) + var(--safe-bottom) + 12px);
+  }
+  .toast {
+    min-width: 0;
+    max-width: none;
+    transform-origin: bottom center;
+  }
+}

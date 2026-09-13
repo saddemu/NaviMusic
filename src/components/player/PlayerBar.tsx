@@ -6,6 +6,7 @@ import { useAuthStore } from '@/store/authStore';
 import { formatDuration } from '@/lib/utils';
 import { useStarMutation } from '@/hooks/useStarMutation';
 import { useUiStore } from '@/store/uiStore';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 import { seekCurrent } from '@/lib/player';
 import {
   ExpandIcon,
@@ -56,12 +57,22 @@ export default function PlayerBar() {
   const setFullscreenOrigin = useUiStore((s) => s.setFullscreenOrigin);
 
   const coverRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   // Anchor the fullscreen player to the artwork it grew out of.
   const expand = () => {
     const r = coverRef.current?.getBoundingClientRect();
     if (r) setFullscreenOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
     toggleFullscreen();
+  };
+
+  // On a phone the whole strip opens the fullscreen player: a 44px square of
+  // artwork is a poor target next to a bar the thumb is already resting on.
+  // Anything genuinely interactive inside it keeps its own job.
+  const onBarClick = (e: React.MouseEvent) => {
+    if (!isMobile || !song) return;
+    if ((e.target as HTMLElement).closest('button, a, input, [role="button"]')) return;
+    expand();
   };
 
   const star = useStarMutation();
@@ -86,7 +97,12 @@ export default function PlayerBar() {
   const volumePct = (isMuted ? 0 : volume) * 100;
 
   return (
-    <div className={styles.bar} role="region" aria-label="Music player">
+    <div className={styles.bar} role="region" aria-label="Music player" onClick={onBarClick}>
+      {/* Phone only. There is no room for a scrubber down there, so the bar
+          reports position as a hairline along its own top edge instead. */}
+      <div className={styles.miniProgress} aria-hidden="true">
+        <span style={{ width: `${progressPct}%` }} />
+      </div>
       <div className={styles.left}>
         {song ? (
           <>
@@ -137,7 +153,7 @@ export default function PlayerBar() {
         <div className={styles.controls}>
           <Tooltip label={shuffle ? 'Shuffle on' : 'Shuffle off'}>
             <button
-              className={`${styles.ctrl}${shuffle ? ' ' + styles.active : ''}`}
+              className={`${styles.ctrl} ${styles.wideOnly}${shuffle ? ' ' + styles.active : ''}`}
               onClick={toggleShuffle}
               aria-label="Shuffle"
               aria-pressed={shuffle}
@@ -148,7 +164,7 @@ export default function PlayerBar() {
           </Tooltip>
           <Tooltip label="Previous">
             <button
-              className={styles.ctrl}
+              className={`${styles.ctrl} ${styles.wideOnly}`}
               onClick={prev}
               aria-label="Previous track"
               disabled={!song}
@@ -181,7 +197,7 @@ export default function PlayerBar() {
           </Tooltip>
           <Tooltip label={REPEAT_LABEL[repeat]}>
             <button
-              className={`${styles.ctrl}${repeat !== 'off' ? ' ' + styles.active : ''}`}
+              className={`${styles.ctrl} ${styles.wideOnly}${repeat !== 'off' ? ' ' + styles.active : ''}`}
               onClick={cycleRepeat}
               aria-label={`Repeat ${repeat}`}
               type="button"

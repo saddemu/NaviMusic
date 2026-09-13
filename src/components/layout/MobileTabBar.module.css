@@ -1,0 +1,52 @@
+/* The phone's primary navigation. It exists only under the breakpoint — above
+   it the sidebar is still the right answer, and two navigations on one screen
+   is one too many. */
+.bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 95;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    align-items: stretch;
+    height: calc(var(--tabbar-height) + var(--safe-bottom));
+    padding-bottom: var(--safe-bottom);
+    border-top: 1px solid var(--glass-edge);
+    background: var(--glass-thick);
+    backdrop-filter: var(--blur-thick);
+    -webkit-backdrop-filter: var(--blur-thick);
+  }
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-tertiary);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  /* The whole cell is the target, so the tappable area is the full 58px tall
+     column rather than the glyph inside it. */
+  min-height: 100%;
+  transition:
+    color var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
+}
+
+.tab:active {
+  transform: scale(0.92);
+}
+
+.tab.active {
+  color: var(--accent);
+}

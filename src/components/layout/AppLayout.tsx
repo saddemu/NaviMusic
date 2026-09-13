@@ -4,6 +4,7 @@ import { startAudioEngine } from '@/lib/player';
 import { useUiStore, SIDEBAR_BOUNDS } from '@/store/uiStore';
 import Sidebar from '../sidebar/Sidebar';
 import TopBar from './TopBar';
+import MobileTabBar from './MobileTabBar';
 import Backdrop from './Backdrop';
 import PlayerBar from '../player/PlayerBar';
 import QueueDrawer from '../player/QueueDrawer';
@@ -91,6 +92,7 @@ export default function AppLayout() {
       <div className={styles.player}>
         <PlayerBar />
       </div>
+      <MobileTabBar />
       <QueueDrawer />
       <LyricsDrawer />
       <NowPlaying />

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getAlbum, getAlbumList2, getGenres, getSongsByGenre } from '@/lib/subsonic';
+import { getAlbum, getAlbumList2, getAllSongs, getGenres, getSongsByGenre } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 import { usePlayerStore } from '@/store/playerStore';
 import type { Song } from '@/types/subsonic';
 import { PlayIcon, ShuffleIcon } from '../ui/Icon';
@@ -11,8 +12,10 @@ import styles from './Songs.module.css';
 
 const ROW_HEIGHT = 56;
 const OVERSCAN = 6;
-const ALBUMS_PER_PAGE = 50;
+const SONG_PAGE_SIZE = 500;
 const GENRE_PAGE_SIZE = 500;
+/** Only used by the fallback feed, which pays a request per album. */
+const ALBUMS_PER_PAGE = 20;
 
 type SortKey = 'title' | 'artist' | 'album' | 'duration';
 
@@ -23,6 +26,9 @@ interface SongsPage {
 
 export default function Songs() {
   const config = useAuthStore((s) => s.config);
+  // A phone fits the title and the duration; artist, album and bitrate are
+  // dropped from both the header and the rows rather than squeezed.
+  const isMobile = useIsMobile();
   const playQueue = usePlayerStore((s) => s.playQueue);
   const playShuffled = usePlayerStore((s) => s.playShuffled);
 
@@ -39,12 +45,28 @@ export default function Songs() {
     enabled: !!config,
   });
 
-  // Songs come from the album tree (getAlbum keeps coverArt populated on
-  // every server) and stream in page by page so the list renders right away.
+  // Which feed this server can answer, decided once with a one-song probe and
+  // then kept for the session. `search3` gives the whole library a page at a
+  // time; walking the album list costs a request per album and is only worth
+  // it on a server that will not answer the first form.
+  const feedMode = useQuery({
+    queryKey: ['songs-feed-mode'],
+    queryFn: async (): Promise<'search' | 'albums'> => {
+      const probe = await getAllSongs(config!, 1, 0);
+      return probe.length > 0 ? 'search' : 'albums';
+    },
+    enabled: !!config,
+    staleTime: Infinity,
+  });
+
+  // One request per 500 songs on the fast path. This used to walk the album
+  // list and call getAlbum on every album unconditionally — a request per
+  // album, thousands of them on a real library, fifty at a time on page open.
   const songsQuery = useInfiniteQuery({
-    queryKey: ['songs-feed', genreFilter],
+    queryKey: ['songs-feed', genreFilter, feedMode.data],
     queryFn: async ({ pageParam }): Promise<SongsPage> => {
       if (!config) return { songs: [], nextOffset: null };
+
       if (genreFilter) {
         const songs = await getSongsByGenre(config, genreFilter, GENRE_PAGE_SIZE, pageParam);
         return {
@@ -52,19 +74,35 @@ export default function Songs() {
           nextOffset: songs.length < GENRE_PAGE_SIZE ? null : pageParam + GENRE_PAGE_SIZE,
         };
       }
-      const albums = await getAlbumList2(config, 'alphabeticalByName', ALBUMS_PER_PAGE, pageParam);
-      const detailed = await Promise.all(albums.map((a) => getAlbum(config, a.id)));
+
+      if (feedMode.data === 'albums') {
+        const albums = await getAlbumList2(
+          config,
+          'alphabeticalByName',
+          ALBUMS_PER_PAGE,
+          pageParam,
+        );
+        const detailed = await Promise.all(albums.map((a) => getAlbum(config, a.id)));
+        return {
+          songs: detailed.flatMap((a) => a.song ?? []),
+          nextOffset: albums.length < ALBUMS_PER_PAGE ? null : pageParam + ALBUMS_PER_PAGE,
+        };
+      }
+
+      const songs = await getAllSongs(config, SONG_PAGE_SIZE, pageParam);
       return {
-        songs: detailed.flatMap((a) => a.song ?? []),
-        nextOffset: albums.length < ALBUMS_PER_PAGE ? null : pageParam + ALBUMS_PER_PAGE,
+        songs,
+        nextOffset: songs.length < SONG_PAGE_SIZE ? null : pageParam + SONG_PAGE_SIZE,
       };
     },
     initialPageParam: 0,
     getNextPageParam: (last) => last.nextOffset,
-    enabled: !!config,
+    enabled: !!config && !!feedMode.data,
   });
 
-  // Pull the whole library eagerly instead of waiting for scroll.
+  // The whole library still arrives eagerly — sorting and "play everything"
+  // are only honest over the whole list — but sequentially, and now at a few
+  // dozen requests rather than a few thousand.
   const { hasNextPage, isFetching, fetchNextPage } = songsQuery;
   useEffect(() => {
     if (hasNextPage && !isFetching) fetchNextPage();
@@ -161,13 +199,17 @@ export default function Songs() {
         <button onClick={() => setSort('title')} type="button">
           Title {sortKey === 'title' ? (sortAsc ? '↑' : '↓') : ''}
         </button>
-        <button onClick={() => setSort('artist')} type="button">
-          Artist {sortKey === 'artist' ? (sortAsc ? '↑' : '↓') : ''}
-        </button>
-        <button onClick={() => setSort('album')} type="button">
-          Album {sortKey === 'album' ? (sortAsc ? '↑' : '↓') : ''}
-        </button>
-        <span>Bitrate</span>
+        {!isMobile && (
+          <>
+            <button onClick={() => setSort('artist')} type="button">
+              Artist {sortKey === 'artist' ? (sortAsc ? '↑' : '↓') : ''}
+            </button>
+            <button onClick={() => setSort('album')} type="button">
+              Album {sortKey === 'album' ? (sortAsc ? '↑' : '↓') : ''}
+            </button>
+            <span>Bitrate</span>
+          </>
+        )}
         <button onClick={() => setSort('duration')} type="button" style={{ textAlign: 'right' }}>
           Time {sortKey === 'duration' ? (sortAsc ? '↑' : '↓') : ''}
         </button>
@@ -183,14 +225,15 @@ export default function Songs() {
                 song={s}
                 index={startIndex + i + 1}
                 showCover
-                showArtist
-                showAlbum
-                showBitrate
+                showArtist={!isMobile}
+                showAlbum={!isMobile}
+                showBitrate={!isMobile}
                 onPlay={() => playQueue(sorted, startIndex + i)}
               />
             ))}
           </div>
         </div>
+        <div className={styles.listSpacer} />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { coverArtUrl, getAlbum, getAlbumList2, getRandomSongs } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
 import { usePlayerStore } from '@/store/playerStore';
-import { greeting } from '@/lib/utils';
+import { greeting, isNarrowViewport } from '@/lib/utils';
 import { useDragScroll } from '@/hooks/useDragScroll';
 import AlbumCard from '../ui/AlbumCard';
 import PageHeader from '../ui/PageHeader';
@@ -27,13 +27,22 @@ function CardSkeleton() {
 
 const FEATURED_LABELS = ['New release', 'Recently added', 'Discover'];
 
-function FeaturedCard({ album, eyebrow }: { album: Album; eyebrow: string }) {
+function FeaturedCard({
+  album,
+  eyebrow,
+  priority = false,
+}: {
+  album: Album;
+  eyebrow: string;
+  /** The first card is the largest thing above the fold — the LCP element. */
+  priority?: boolean;
+}) {
   const config = useAuthStore((s) => s.config);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const playQueue = usePlayerStore((s) => s.playQueue);
 
-  const cover = config ? coverArtUrl(config, album.coverArt, 800) : '';
+  const cover = config ? coverArtUrl(config, album.coverArt, isNarrowViewport() ? 480 : 800) : '';
 
   const onPlay = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -55,7 +64,17 @@ function FeaturedCard({ album, eyebrow }: { album: Album; eyebrow: string }) {
       <h3 className={styles.heroTitle}>{album.name}</h3>
       <span className={styles.heroSub}>{album.artist}</span>
       <div className={styles.heroImg}>
-        {cover && <img src={cover} alt={album.name} loading="lazy" decoding="async" />}
+        {cover && (
+          <img
+            src={cover}
+            alt={album.name}
+            /* Lazy on the LCP element defers the request until layout has run;
+               the first card asks for it as soon as the markup is parsed. */
+            loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority ? 'high' : 'auto'}
+            decoding="async"
+          />
+        )}
         <button className={styles.heroPlay} onClick={onPlay} aria-label="Play" type="button">
           <PlayIcon size={20} />
         </button>
@@ -147,7 +166,7 @@ export default function Home() {
             </div>
           ))}
         {featured.map((a, i) => (
-          <FeaturedCard key={a.id} album={a} eyebrow={FEATURED_LABELS[i]} />
+          <FeaturedCard key={a.id} album={a} eyebrow={FEATURED_LABELS[i]} priority={i === 0} />
         ))}
       </div>
 

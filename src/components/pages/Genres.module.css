@@ -1,11 +1,11 @@
 .page {
-  padding: 0 0 40px;
+  padding: 0 0 var(--content-bottom);
 }
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
-  padding: 4px 40px 32px;
+  padding: 4px var(--gutter) 32px;
 }
 .card {
   background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-overlay) 100%);
@@ -51,4 +51,18 @@
   font-size: 0.75rem;
   color: var(--text-secondary);
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    min-height: 100px;
+    padding: 14px;
+  }
+  .name {
+    font-size: 1.0625rem;
+  }
 }

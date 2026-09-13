@@ -1,8 +1,8 @@
 .page {
-  padding: 0 0 40px;
+  padding: 0 0 var(--content-bottom);
 }
 .searchBox {
-  padding: 0 40px 18px;
+  padding: 0 var(--gutter) 18px;
 }
 .input {
   width: 100%;
@@ -19,7 +19,7 @@
   border-color: var(--accent);
 }
 .recent {
-  padding: 0 40px;
+  padding: 0 var(--gutter);
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -38,7 +38,7 @@
   color: var(--text-primary);
 }
 .section {
-  padding: 0 40px 24px;
+  padding: 0 var(--gutter) 24px;
 }
 .section h2 {
   font-family: var(--font-display);
@@ -72,4 +72,30 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .input {
+    max-width: none;
+    /* 16px or iOS zooms the page the moment the field takes focus. */
+    font-size: 1rem;
+  }
+
+  .section h2 {
+    font-size: 1.125rem;
+  }
+
+  .albumGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  .artistGrid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .albumGrid,
+  .artistGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

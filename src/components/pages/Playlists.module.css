@@ -1,8 +1,8 @@
 .page {
-  padding: 0 0 40px;
+  padding: 0 0 var(--content-bottom);
 }
 .list {
-  padding: 4px 40px;
+  padding: 4px var(--gutter);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -76,4 +76,20 @@
 .delete:hover {
   color: var(--accent);
   background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+  .row {
+    grid-template-columns: 36px 1fr 32px;
+    gap: 12px;
+  }
+  /* Created date and visibility are reference, not navigation — the name and
+     the track count carry the row on a phone. */
+  .cell {
+    display: none;
+  }
+  /* Nothing hovers on touch, so the destructive action cannot hide. */
+  .delete {
+    opacity: 1;
+  }
 }

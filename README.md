@@ -147,9 +147,19 @@ The login form warns when you enter a plain-`http://` URL for a non-loopback hos
 - **Queue drawer** — drag to reorder, remove, clear; drag down to dismiss
 - **Now Playing** — fullscreen view that grows out of the artwork that opened it,
   blurred cover backdrop, synced lyrics when the server returns them
-- **Settings** — max bitrate, crossfade, prefetch toggle, server ping, cache clear
-- **OS integration** — Media Session API metadata and actions: lock screen,
-  notification, hardware media keys
+- **Settings** — max bitrate, crossfade, prefetch toggle, server ping, cache clear;
+  the profile menu in the top bar reports the server round trip on demand
+- **Phone layout** — under 768 px the sidebar gives way to a bottom tab bar
+  (Home / Search / Library / Settings), the player collapses to artwork, title
+  and transport, tables drop their secondary columns, and everything clears the
+  home indicator
+- **Installable** — web manifest, maskable icons, and a service worker that
+  caches only the app shell, so a cold launch needs no network; it never touches
+  the Navidrome server's API, artwork, or streams
+- **OS integration** — Media Session API metadata, position state, and actions:
+  lock screen, notification, hardware media keys. Playback runs through a media
+  element and Howler's auto-suspend is off, so an installed app keeps playing
+  with the screen off
 - **Motion and materials** — interruptible, velocity-aware springs (no animation
   library) and a three-weight translucent material system
 - **Accessibility** — honours `prefers-reduced-motion`, `prefers-reduced-transparency`,
@@ -174,22 +184,24 @@ The login form warns when you enter a plain-`http://` URL for a non-loopback hos
 ```
 src/
   components/
-    layout/     AppLayout, TopBar, Backdrop
+    layout/     AppLayout, TopBar, MobileTabBar, Backdrop
     sidebar/    Sidebar
     player/     PlayerBar, QueueDrawer, NowPlaying, LyricsDrawer
-    pages/      Login, Home, Albums, Artists, Songs, Genres, Search,
-                Playlists, PlaylistDetail, AlbumDetail, ArtistDetail,
-                Starred, Settings
+    pages/      Login, Home, Library, Albums, Artists, Songs, Genres,
+                Search, Playlists, PlaylistDetail, AlbumDetail,
+                ArtistDetail, Starred, Settings
     ui/         AlbumCard, ArtistCard, TrackRow, Modal, Toast, Skeleton,
                 ContextMenu, EmptyState, PageHeader, Tooltip, Icon
   lib/          subsonic (the single API chokepoint), player (Howler
                 singleton), crypto (MD5 for token derivation), sanitize
-                (DOMPurify config), spring, utils
+                (DOMPurify config), pwa (service worker registration),
+                spring, utils
   store/        authStore, playerStore, settingsStore, uiStore, toastStore
   hooks/        useGlobalShortcuts, useStarMutation, useSubsonicConfig,
-                useDragScroll, useSheetGesture, useLyrics
+                useDragScroll, useSheetGesture, useLyrics, useMediaQuery
   types/        subsonic
-  styles/       global.css (design tokens)
+  styles/       global.css (design tokens + breakpoints)
+public/         manifest.webmanifest, sw.js, icons
 
 Dockerfile · docker-compose.yml · run.sh
 .github/        CI, scheduled security scans, Dependabot

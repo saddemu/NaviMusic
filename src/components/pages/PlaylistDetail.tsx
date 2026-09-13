@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { coverArtUrl, getPlaylist, updatePlaylist } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 import { usePlayerStore } from '@/store/playerStore';
 import { useUiStore } from '@/store/uiStore';
 import { showToast } from '@/store/toastStore';
@@ -16,6 +17,7 @@ import styles from './AlbumDetail.module.css';
 export default function PlaylistDetail() {
   const { id } = useParams();
   const config = useAuthStore((s) => s.config);
+  const isMobile = useIsMobile();
   const playQueue = usePlayerStore((s) => s.playQueue);
   const playShuffled = usePlayerStore((s) => s.playShuffled);
   const setBackdropImageUrl = useUiStore((s) => s.setBackdropImageUrl);
@@ -126,7 +128,8 @@ export default function PlaylistDetail() {
 
       <div className={styles.tracks}>
         <div className={styles.tracksHeader}>
-          <span>#</span>
+          {/* The track number is the first thing a phone can do without. */}
+          {!isMobile && <span>#</span>}
           <span>Title</span>
           <span style={{ textAlign: 'right' }}>Time</span>
           <span></span>
@@ -155,20 +158,14 @@ export default function PlaylistDetail() {
               setDragIdx(null);
               setOverIdx(null);
             }}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '20px 1fr',
-              alignItems: 'center',
-              gap: 4,
-              opacity: dragIdx === i ? 0.5 : 1,
-            }}
+            className={`${styles.reorderRow}${dragIdx === i ? ' ' + styles.dragging : ''}`}
           >
-            <span style={{ color: 'var(--text-tertiary)', cursor: 'grab' }} aria-hidden>
+            <span className={styles.dragHandle} aria-hidden>
               <DragIcon size={14} />
             </span>
             <TrackRow
               song={song}
-              index={i + 1}
+              index={isMobile ? undefined : i + 1}
               showCover
               onPlay={() => playQueue(songs, i)}
               extraMenu={[

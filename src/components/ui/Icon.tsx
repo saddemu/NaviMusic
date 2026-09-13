@@ -65,6 +65,14 @@ export const PlaylistIcon = ({ size, ...rest }: IconProps) => (
   </svg>
 );
 
+export const LibraryIcon = ({ size, ...rest }: IconProps) => (
+  <svg {...base(size)} {...rest}>
+    <rect x="3" y="4" width="4" height="16" rx="1.5" />
+    <rect x="9.5" y="4" width="4" height="16" rx="1.5" />
+    <path d="m17.2 5.4 3.3 14.2" />
+  </svg>
+);
+
 export const HeartIcon = ({ filled, size, ...rest }: IconProps & { filled?: boolean }) => (
   <svg {...base(size)} fill={filled ? 'currentColor' : 'none'} {...rest}>
     <path d="M12 21s-7.5-4.5-9.5-9c-1.6-3.6 1-7 4.5-7 2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.5 0 6.1 3.4 4.5 7-2 4.5-9.5 9-9.5 9Z" />
@@ -195,6 +203,12 @@ export const SettingsIcon = ({ size, ...rest }: IconProps) => (
   <svg {...base(size)} {...rest}>
     <circle cx="12" cy="12" r="3" />
     <path d="M19.43 12.98a8 8 0 0 0 0-1.96l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a8 8 0 0 0-1.69-.98l-.38-2.65A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.38 2.65a8 8 0 0 0-1.69.98l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65a8 8 0 0 0 0 1.96l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .61.22l2.49-1a8 8 0 0 0 1.69.98l.38 2.65a.5.5 0 0 0 .49.42h4a.5.5 0 0 0 .49-.42l.38-2.65a8 8 0 0 0 1.69-.98l2.49 1a.5.5 0 0 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64Z" />
+  </svg>
+);
+
+export const PulseIcon = ({ size, ...rest }: IconProps) => (
+  <svg {...base(size)} {...rest}>
+    <path d="M3 12h4l2.5-7 5 14L17 12h4" />
   </svg>
 );
 

@@ -109,3 +109,19 @@
   margin-top: 12px;
   text-align: center;
 }
+
+@media (max-width: 768px) {
+  .shell {
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+    align-items: center;
+  }
+  .card {
+    padding: 28px 22px 26px;
+  }
+  .brand {
+    font-size: 1.75rem;
+  }
+  .tagline {
+    margin-bottom: 22px;
+  }
+}

@@ -52,7 +52,9 @@ export default function Settings() {
 
   return (
     <div className={styles.page}>
-      <PageHeader title="Settings" />
+      <div className={styles.headerWrap}>
+        <PageHeader title="Settings" />
+      </div>
       <div className={styles.body}>
         <div className={styles.row}>
           <div className={styles.rowText}>

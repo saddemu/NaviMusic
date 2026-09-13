@@ -195,3 +195,24 @@
   color: var(--text-tertiary);
   font-size: 0.8125rem;
 }
+
+@media (max-width: 768px) {
+  /* Full-bleed: a 360px pane with a sliver of blurred app beside it is not
+     worth the width here, and the sheet gesture still dismisses it. */
+  .drawer {
+    width: 100%;
+    max-width: none;
+    height: calc(100dvh - var(--player-height) - var(--tabbar-height) - var(--safe-bottom));
+    border-left: 0;
+  }
+
+  .item {
+    grid-template-columns: 36px 1fr auto;
+    padding: 10px;
+  }
+  /* Reordering by drag needs a pointer; on touch the handle is only clutter
+     and it is stealing 26px from the title. */
+  .handle {
+    display: none;
+  }
+}

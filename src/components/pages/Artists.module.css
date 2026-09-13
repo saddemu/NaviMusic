@@ -1,12 +1,12 @@
 .page {
-  padding: 0 0 40px;
+  padding: 0 0 var(--content-bottom);
   position: relative;
 }
 .layout {
   display: grid;
   grid-template-columns: 1fr 32px;
   gap: 16px;
-  padding: 0 40px 32px;
+  padding: 0 var(--gutter) 32px;
 }
 .grid {
   display: grid;
@@ -16,6 +16,13 @@
 .section {
   margin-top: 24px;
   scroll-margin-top: 24px;
+  /* A library can hold a thousand artists, and all of them are in the DOM at
+     once so the A-Z jumps land instantly. This lets the browser skip layout
+     and paint for the letters that are off screen; the placeholder height is
+     a first guess it replaces with the real one after a section has been
+     rendered once, so the scrollbar settles instead of jumping. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
 }
 .sectionLabel {
   font-family: var(--font-display);
@@ -54,4 +61,29 @@
 .alphaBar button.disabled {
   opacity: 0.3;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  /* The A–Z rail is a pointer affordance: 18px tall targets do not survive a
+     thumb, and the grid needs the width more than the shortcut. */
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .alphaBar {
+    display: none;
+  }
+
+  /* Three across, and `minmax(0, …)` rather than a bare `1fr`: a bare one
+     keeps an automatic minimum of the track's min-content, and a card's
+     min-content is the intrinsic width of its artwork — which is what was
+     pushing this grid off the side of the screen. */
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
+  }
+
+  .sectionLabel {
+    font-size: 1.125rem;
+    margin: 6px 4px 8px;
+  }
 }

@@ -1,5 +1,5 @@
 .header {
-  padding: 24px 40px 18px;
+  padding: 24px var(--gutter) 18px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -34,4 +34,28 @@
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+/* The title scales with the viewport rather than stepping at a breakpoint —
+   40px on a desktop, ~28px on a phone, no sudden jump in between. */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 6px var(--gutter) 16px;
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 9vw, 2.75rem);
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
+  /* Anything that can stretch (selects, mostly) takes the full row instead of
+     leaving a ragged half-width control. */
+  .actions > select {
+    flex: 1 1 100%;
+  }
 }

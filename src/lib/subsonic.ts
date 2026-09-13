@@ -189,6 +189,29 @@ export async function search3(
   };
 }
 
+/**
+ * Every song in the library, paged.
+ *
+ * `search3` with an empty query is how OpenSubsonic asks for everything, and
+ * it answers in one request per page. The alternative — walking the album list
+ * and calling `getAlbum` on each one — costs a request per album, which on a
+ * real library is thousands of them. Servers that will not accept an empty
+ * query get the legacy `""` wildcard before we give up.
+ *
+ * Artist and album results are switched off: this is a song feed.
+ */
+export async function getAllSongs(
+  config: SubsonicConfig,
+  count: number,
+  offset = 0,
+): Promise<Song[]> {
+  for (const query of ['', '""']) {
+    const res = await search3(config, query, 0, 0, count, offset);
+    if (res.song && res.song.length > 0) return res.song;
+  }
+  return [];
+}
+
 export async function getPlaylists(config: SubsonicConfig): Promise<Playlist[]> {
   const data = await request<{ playlists: { playlist?: Playlist[] } }>(config, 'getPlaylists');
   return arr(data.playlists.playlist);

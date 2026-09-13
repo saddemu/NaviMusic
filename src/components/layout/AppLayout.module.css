@@ -52,9 +52,11 @@
   position: relative;
   /* Content scrolls through the strip the player floats over, then stops
      clear of it — the glass always has something moving behind it, and the
-     last row is still reachable. */
-  padding-bottom: var(--player-height);
-  scroll-padding-bottom: var(--player-height);
+     last row is still reachable. The stopping distance is spent by each
+     page's own bottom padding (`--content-bottom`), not by padding here: an
+     end padding on a scroll container is not reliably honoured once the
+     content overflows it. */
+  scroll-padding-bottom: var(--content-bottom);
 }
 
 .player {
@@ -86,4 +88,33 @@
 .shell.dragging * {
   cursor: col-resize !important;
   user-select: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Phone. The sidebar is a pane you cannot afford at this width, so it goes
+   and a tab bar takes over the primary navigation (see MobileTabBar). The
+   player keeps its place but floats above that bar, and anything that used to
+   clear the player now has to clear both plus the home indicator.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .mainCol {
+    grid-column: 1;
+  }
+
+  .main {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  .player {
+    bottom: calc(var(--tabbar-height) + var(--safe-bottom));
+  }
 }

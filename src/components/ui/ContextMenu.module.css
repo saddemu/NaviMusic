@@ -41,3 +41,15 @@
   background: var(--border-subtle);
   margin: 4px 0;
 }
+
+@media (max-width: 768px) {
+  .menu {
+    min-width: 200px;
+  }
+  /* Menu rows are a primary way to act on a track when there is no hover —
+     give them a thumb-sized target. */
+  .item {
+    padding: 12px 12px;
+    font-size: 0.875rem;
+  }
+}
