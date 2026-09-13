@@ -78,6 +78,11 @@
     --gutter: 20px;
     --player-height: 64px;
     --tabbar-height: 58px;
+    /* iOS reports 0 here while Safari's own toolbar is on screen, then hides
+       the toolbar on scroll and the tab bar ends up under the home indicator.
+       A floor keeps the labels clear in both states, and in a standalone PWA
+       the real inset is larger and wins. */
+    --safe-bottom: max(env(safe-area-inset-bottom, 0px), 14px);
   }
 }
 

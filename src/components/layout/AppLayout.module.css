@@ -108,8 +108,12 @@
   }
 
   .main {
-    padding-bottom: calc(var(--player-height) + var(--tabbar-height) + var(--safe-bottom));
-    scroll-padding-bottom: calc(var(--player-height) + var(--tabbar-height) + var(--safe-bottom));
+    /* The fixed chrome, plus a gap so the last card in a page stops clear of
+       the player's glass rather than touching it. */
+    padding-bottom: calc(var(--player-height) + var(--tabbar-height) + var(--safe-bottom) + 20px);
+    scroll-padding-bottom: calc(
+      var(--player-height) + var(--tabbar-height) + var(--safe-bottom) + 20px
+    );
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }

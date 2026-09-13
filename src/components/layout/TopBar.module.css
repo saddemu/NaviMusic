@@ -168,30 +168,42 @@
   position: relative;
 }
 
-/* The wordmark only appears where the sidebar is not showing one. */
-.brandMobile {
-  display: none;
+/* The ping readout, pushed to the far end of its row. */
+.pingValue {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.71875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+  padding-left: 12px;
+}
+.pingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.pingValue.good {
+  color: var(--success);
+}
+.pingValue.slow {
+  color: #e8a33d;
+}
+.pingValue.down {
+  color: var(--danger);
+}
+.pingValue.pending {
+  color: var(--text-tertiary);
 }
 
 @media (max-width: 768px) {
   .bar {
-    justify-content: space-between;
-    padding: 10px var(--gutter);
-  }
-
-  .brandMobile {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 700;
-    letter-spacing: var(--tracking-title);
-    color: var(--text-primary);
-  }
-  .brandMobile svg {
-    color: var(--accent);
-    flex-shrink: 0;
+    /* Clears the notch in a standalone PWA, where the page owns the whole
+       screen — `viewport-fit=cover` is set in index.html. */
+    padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gutter) 10px;
   }
 
   .profileBtn {

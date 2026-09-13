@@ -206,6 +206,12 @@ export const SettingsIcon = ({ size, ...rest }: IconProps) => (
   </svg>
 );
 
+export const PulseIcon = ({ size, ...rest }: IconProps) => (
+  <svg {...base(size)} {...rest}>
+    <path d="M3 12h4l2.5-7 5 14L17 12h4" />
+  </svg>
+);
+
 export const ExpandIcon = ({ size, ...rest }: IconProps) => (
   <svg {...base(size)} {...rest}>
     <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />

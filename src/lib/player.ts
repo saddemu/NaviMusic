@@ -1,4 +1,4 @@
-import { Howl } from 'howler';
+import { Howl, Howler } from 'howler';
 import { usePlayerStore } from '@/store/playerStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useAuthStore } from '@/store/authStore';
@@ -12,6 +12,48 @@ let lastSongId: string | null = null;
 let scrobbledForSongId: string | null = null;
 let mediaSessionWired = false;
 let retriedForId: string | null = null;
+let lastPositionPush = 0;
+
+/*
+ * Background playback (installed PWA, screen off, app switched away) rests on
+ * three things:
+ *
+ *  - every Howl is `html5: true`, so playback runs through an <audio> element.
+ *    The Web Audio path is suspended by iOS the moment the page is hidden;
+ *    media elements are not.
+ *  - Howler is told not to auto-suspend its shared AudioContext. Left on, it
+ *    tears the context down after 30s of silence and the next unlock has to
+ *    come from a user gesture the backgrounded app will never receive.
+ *  - the Media Session is kept current, which is what the lock screen, the
+ *    notification and the car head unit actually read.
+ */
+Howler.autoSuspend = false;
+
+/** How often position is pushed to the OS. Cheap, but not every 250ms tick. */
+const POSITION_PUSH_MS = 1000;
+
+function pushPositionState(force = false): void {
+  if (!('mediaSession' in navigator) || !navigator.mediaSession.setPositionState) return;
+  const now = Date.now();
+  if (!force && now - lastPositionPush < POSITION_PUSH_MS) return;
+  lastPositionPush = now;
+
+  const state = usePlayerStore.getState();
+  const duration = state.duration || state.currentSong?.duration || 0;
+  const position = state.progress;
+  // The spec throws on a position past the end or a non-finite duration.
+  if (!Number.isFinite(duration) || duration <= 0) return;
+  try {
+    navigator.mediaSession.setPositionState({
+      duration,
+      position: Math.min(Math.max(position, 0), duration),
+      playbackRate: 1,
+    });
+  } catch {
+    // Some engines reject states they dislike; losing the scrubber is not
+    // worth breaking playback over.
+  }
+}
 
 function setupMediaSession(): void {
   if (mediaSessionWired || typeof navigator === 'undefined' || !('mediaSession' in navigator)) {
@@ -26,8 +68,34 @@ function setupMediaSession(): void {
     if (details.seekTime !== undefined && current) {
       current.seek(details.seekTime);
       usePlayerStore.getState().seek(details.seekTime);
+      pushPositionState(true);
     }
   });
+
+  // Lock-screen and headset skip buttons. `setActionHandler` throws on an
+  // action the engine does not know, so each one is guarded separately.
+  const relativeSeek = (delta: number) => {
+    if (!current) return;
+    const state = usePlayerStore.getState();
+    const total = state.duration || state.currentSong?.duration || 0;
+    const target = Math.min(Math.max(state.progress + delta, 0), total > 0 ? total : Infinity);
+    current.seek(target);
+    state.seek(target);
+    pushPositionState(true);
+  };
+
+  const optional: Array<[MediaSessionAction, MediaSessionActionHandler]> = [
+    ['stop', () => usePlayerStore.getState().pause()],
+    ['seekbackward', (d) => relativeSeek(-(d.seekOffset ?? 10))],
+    ['seekforward', (d) => relativeSeek(d.seekOffset ?? 10)],
+  ];
+  for (const [action, handler] of optional) {
+    try {
+      navigator.mediaSession.setActionHandler(action, handler);
+    } catch {
+      // Unsupported on this engine — nothing to fall back to.
+    }
+  }
 }
 
 function updateMediaSession(song: Song | null): void {
@@ -37,13 +105,21 @@ function updateMediaSession(song: Song | null): void {
     navigator.mediaSession.metadata = null;
     return;
   }
-  const art = coverArtUrl(config, song.coverArt, 512);
+  // Several sizes: a lock screen wants the big one, a notification shade the
+  // small one, and letting the OS choose avoids it downscaling 512px art for
+  // a 96px slot on every track change.
+  const artwork = [96, 256, 512].map((size) => ({
+    src: coverArtUrl(config, song.coverArt, size),
+    sizes: `${size}x${size}`,
+    type: 'image/jpeg',
+  }));
   navigator.mediaSession.metadata = new MediaMetadata({
     title: song.title,
     artist: song.artist ?? '',
     album: song.album ?? '',
-    artwork: art ? [{ src: art, sizes: '512x512', type: 'image/jpeg' }] : [],
+    artwork: artwork[0].src ? artwork : [],
   });
+  pushPositionState(true);
 }
 
 function startProgressTimer(): void {
@@ -59,6 +135,7 @@ function startProgressTimer(): void {
           ? rawDur
           : (state.currentSong?.duration ?? state.duration);
       state._setProgress(seek, safeDur);
+      pushPositionState();
       // Scrobble at 50% (or 4min) — once per song
       if (
         scrobbledForSongId !== state.currentSong?.id &&
@@ -130,12 +207,18 @@ function buildHowl(song: Song): Howl | null {
     onplay: () => {
       usePlayerStore.getState()._setIsPlaying(true);
       startProgressTimer();
-      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'playing';
+        pushPositionState(true);
+      }
     },
     onpause: () => {
       usePlayerStore.getState()._setIsPlaying(false);
       stopProgressTimer();
-      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'paused';
+        pushPositionState(true);
+      }
     },
     onstop: () => {
       stopProgressTimer();
@@ -242,5 +325,6 @@ export function seekCurrent(seconds: number): void {
   if (current) {
     current.seek(seconds);
     usePlayerStore.getState()._setProgress(seconds, current.duration());
+    pushPositionState(true);
   }
 }

@@ -285,11 +285,21 @@
   background: var(--accent);
 }
 
-/* Repo link pinned to the bottom — `margin-top: auto` keeps it there even when
-   collapsed, where `.playlists` (the flex:1 spacer) is hidden. */
-.repoLink {
+/* The footer pair is pinned to the bottom — the margin sits on the first of
+   them so it holds even when collapsed, where `.playlists` (the flex:1
+   spacer) is hidden. */
+.footer {
   margin-top: auto;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sidebar.collapsed .footer {
+  align-items: center;
+}
+
+.repoLink {
   color: var(--text-tertiary);
   font-size: 0.8125rem;
 }

@@ -18,6 +18,7 @@ import {
   PlaylistIcon,
   PlusIcon,
   SearchIcon,
+  SettingsIcon,
   SongIcon,
 } from '../ui/Icon';
 import Modal from '../ui/Modal';
@@ -174,15 +175,22 @@ export default function Sidebar() {
         </div>
       )}
 
-      <a
-        className={`${styles.item} ${styles.repoLink}`}
-        href={REPO_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        title="View on GitHub"
-      >
-        <GithubIcon size={18} /> <span className={styles.itemLabel}>View on GitHub</span>
-      </a>
+      {/* Settings used to live in the profile menu; that row now reports the
+          server round trip, so the sidebar carries the link. */}
+      <div className={styles.footer}>
+        <NavLink to="/settings" className={navItem} title="Settings" end>
+          <SettingsIcon size={18} /> <span className={styles.itemLabel}>Settings</span>
+        </NavLink>
+        <a
+          className={`${styles.item} ${styles.repoLink}`}
+          href={REPO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="View on GitHub"
+        >
+          <GithubIcon size={18} /> <span className={styles.itemLabel}>View on GitHub</span>
+        </a>
+      </div>
 
       <Modal
         open={createOpen}

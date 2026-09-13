@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
+import { registerServiceWorker } from './lib/pwa';
 import '@fontsource-variable/dm-sans';
 import './styles/global.css';
 
@@ -16,6 +17,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+registerServiceWorker();
 
 const rootEl = document.getElementById('root');
 if (!rootEl) throw new Error('Missing #root');
