@@ -14,6 +14,7 @@ import {
   PauseIcon,
   PlayIcon,
   PrevIcon,
+  QueueIcon,
   RepeatIcon,
   ShuffleIcon,
 } from '../ui/Icon';
@@ -34,7 +35,16 @@ export default function NowPlaying() {
   const prev = usePlayerStore((s) => s.prev);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const cycleRepeat = usePlayerStore((s) => s.cycleRepeat);
+  const toggleQueueDrawer = usePlayerStore((s) => s.toggleQueueDrawer);
   const origin = useUiStore((s) => s.fullscreenOrigin);
+
+  // The queue drawer sits below this overlay, so showing it means standing
+  // down first. On a phone this is the only way in — the player bar's own
+  // queue button is one of the controls that does not survive the width.
+  const openQueue = () => {
+    setOpen(false);
+    toggleQueueDrawer();
+  };
 
   const [scrubbing, setScrubbing] = useState(false);
   const [scrubValue, setScrubValue] = useState(0);
@@ -115,6 +125,15 @@ export default function NowPlaying() {
               type="button"
             >
               <LyricsIcon size={20} />
+            </button>
+            <button
+              className={styles.iconBtn}
+              onClick={openQueue}
+              aria-label="Show queue"
+              title="Queue"
+              type="button"
+            >
+              <QueueIcon size={20} />
             </button>
             <button
               className={styles.iconBtn}

@@ -87,6 +87,11 @@ export default function PlayerBar() {
 
   return (
     <div className={styles.bar} role="region" aria-label="Music player">
+      {/* Phone only. There is no room for a scrubber down there, so the bar
+          reports position as a hairline along its own top edge instead. */}
+      <div className={styles.miniProgress} aria-hidden="true">
+        <span style={{ width: `${progressPct}%` }} />
+      </div>
       <div className={styles.left}>
         {song ? (
           <>
@@ -137,7 +142,7 @@ export default function PlayerBar() {
         <div className={styles.controls}>
           <Tooltip label={shuffle ? 'Shuffle on' : 'Shuffle off'}>
             <button
-              className={`${styles.ctrl}${shuffle ? ' ' + styles.active : ''}`}
+              className={`${styles.ctrl} ${styles.wideOnly}${shuffle ? ' ' + styles.active : ''}`}
               onClick={toggleShuffle}
               aria-label="Shuffle"
               aria-pressed={shuffle}
@@ -148,7 +153,7 @@ export default function PlayerBar() {
           </Tooltip>
           <Tooltip label="Previous">
             <button
-              className={styles.ctrl}
+              className={`${styles.ctrl} ${styles.wideOnly}`}
               onClick={prev}
               aria-label="Previous track"
               disabled={!song}
@@ -181,7 +186,7 @@ export default function PlayerBar() {
           </Tooltip>
           <Tooltip label={REPEAT_LABEL[repeat]}>
             <button
-              className={`${styles.ctrl}${repeat !== 'off' ? ' ' + styles.active : ''}`}
+              className={`${styles.ctrl} ${styles.wideOnly}${repeat !== 'off' ? ' ' + styles.active : ''}`}
               onClick={cycleRepeat}
               aria-label={`Repeat ${repeat}`}
               type="button"

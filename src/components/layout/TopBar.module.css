@@ -167,3 +167,46 @@
 .wrap {
   position: relative;
 }
+
+/* The wordmark only appears where the sidebar is not showing one. */
+.brandMobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bar {
+    justify-content: space-between;
+    padding: 10px var(--gutter);
+  }
+
+  .brandMobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: var(--tracking-title);
+    color: var(--text-primary);
+  }
+  .brandMobile svg {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .profileBtn {
+    max-width: 150px;
+  }
+  /* The name is the first thing to go when the row gets tight — the avatar
+     already identifies who is signed in. */
+  .username {
+    display: none;
+  }
+
+  .menu {
+    /* Anchored right, but never wider than the screen it is opening on. */
+    min-width: 0;
+    width: max-content;
+    max-width: calc(100vw - 2 * var(--gutter));
+  }
+}

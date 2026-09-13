@@ -129,3 +129,22 @@
   text-transform: uppercase;
   border-bottom: 1px solid var(--glass-edge-soft);
 }
+
+@media (max-width: 768px) {
+  .drawer {
+    width: 100%;
+    max-width: none;
+    height: calc(100dvh - var(--player-height) - var(--tabbar-height) - var(--safe-bottom));
+    border-left: 0;
+  }
+
+  .body {
+    padding: 8px var(--gutter) 32px;
+  }
+  .line {
+    font-size: 1rem;
+  }
+  .unsyncedHint {
+    padding: 10px var(--gutter);
+  }
+}

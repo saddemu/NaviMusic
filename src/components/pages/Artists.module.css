@@ -6,7 +6,7 @@
   display: grid;
   grid-template-columns: 1fr 32px;
   gap: 16px;
-  padding: 0 40px 32px;
+  padding: 0 var(--gutter) 32px;
 }
 .grid {
   display: grid;
@@ -54,4 +54,29 @@
 .alphaBar button.disabled {
   opacity: 0.3;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  /* The A–Z rail is a pointer affordance: 18px tall targets do not survive a
+     thumb, and the grid needs the width more than the shortcut. */
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .alphaBar {
+    display: none;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+
+  .sectionLabel {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

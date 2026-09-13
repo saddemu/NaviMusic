@@ -11,6 +11,7 @@ const Albums = lazy(() => import('./components/pages/Albums'));
 const Artists = lazy(() => import('./components/pages/Artists'));
 const Songs = lazy(() => import('./components/pages/Songs'));
 const Genres = lazy(() => import('./components/pages/Genres'));
+const Library = lazy(() => import('./components/pages/Library'));
 const Search = lazy(() => import('./components/pages/Search'));
 const Playlists = lazy(() => import('./components/pages/Playlists'));
 const PlaylistDetail = lazy(() => import('./components/pages/PlaylistDetail'));
@@ -154,6 +155,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageFallback />}>
               <Genres />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/library"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <Library />
             </Suspense>
           }
         />

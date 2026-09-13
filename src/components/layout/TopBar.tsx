@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { getInitials } from '@/lib/utils';
-import { ChevronRight, LogoutIcon, SettingsIcon } from '../ui/Icon';
+import { BrandMark, ChevronRight, LogoutIcon, SettingsIcon } from '../ui/Icon';
 import styles from './TopBar.module.css';
 
 interface Props {
@@ -39,6 +39,12 @@ export default function TopBar({ scrolled = false }: Props) {
 
   return (
     <div className={`${styles.bar}${scrolled ? ' ' + styles.scrolled : ''}`}>
+      {/* Phone only. The sidebar carries the wordmark everywhere else, and the
+          tab bar below has no room for it. */}
+      <Link to="/" className={styles.brandMobile} aria-label="pMusic home">
+        <BrandMark size={20} />
+        <span>pMusic</span>
+      </Link>
       <div className={styles.wrap} ref={wrapRef}>
         <button
           className={`${styles.profileBtn}${open ? ' ' + styles.open : ''}`}

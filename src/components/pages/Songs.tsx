@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { getAlbum, getAlbumList2, getGenres, getSongsByGenre } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 import { usePlayerStore } from '@/store/playerStore';
 import type { Song } from '@/types/subsonic';
 import { PlayIcon, ShuffleIcon } from '../ui/Icon';
@@ -23,6 +24,9 @@ interface SongsPage {
 
 export default function Songs() {
   const config = useAuthStore((s) => s.config);
+  // A phone fits the title and the duration; artist, album and bitrate are
+  // dropped from both the header and the rows rather than squeezed.
+  const isMobile = useIsMobile();
   const playQueue = usePlayerStore((s) => s.playQueue);
   const playShuffled = usePlayerStore((s) => s.playShuffled);
 
@@ -161,13 +165,17 @@ export default function Songs() {
         <button onClick={() => setSort('title')} type="button">
           Title {sortKey === 'title' ? (sortAsc ? '↑' : '↓') : ''}
         </button>
-        <button onClick={() => setSort('artist')} type="button">
-          Artist {sortKey === 'artist' ? (sortAsc ? '↑' : '↓') : ''}
-        </button>
-        <button onClick={() => setSort('album')} type="button">
-          Album {sortKey === 'album' ? (sortAsc ? '↑' : '↓') : ''}
-        </button>
-        <span>Bitrate</span>
+        {!isMobile && (
+          <>
+            <button onClick={() => setSort('artist')} type="button">
+              Artist {sortKey === 'artist' ? (sortAsc ? '↑' : '↓') : ''}
+            </button>
+            <button onClick={() => setSort('album')} type="button">
+              Album {sortKey === 'album' ? (sortAsc ? '↑' : '↓') : ''}
+            </button>
+            <span>Bitrate</span>
+          </>
+        )}
         <button onClick={() => setSort('duration')} type="button" style={{ textAlign: 'right' }}>
           Time {sortKey === 'duration' ? (sortAsc ? '↑' : '↓') : ''}
         </button>
@@ -183,9 +191,9 @@ export default function Songs() {
                 song={s}
                 index={startIndex + i + 1}
                 showCover
-                showArtist
-                showAlbum
-                showBitrate
+                showArtist={!isMobile}
+                showAlbum={!isMobile}
+                showBitrate={!isMobile}
                 onPlay={() => playQueue(sorted, startIndex + i)}
               />
             ))}

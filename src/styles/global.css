@@ -40,6 +40,14 @@
   --radius-xl: 1.5rem;
   --sidebar-width: 236px;
   --player-height: 88px;
+  /* Zero on desktop: the tab bar only exists at phone widths, but everything
+     that has to clear it (the player, the scroll padding, the toasts) reads
+     the token unconditionally. */
+  --tabbar-height: 0px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  /* The page gutter. One token so every page breathes the same amount, and
+     narrowing the viewport narrows all of them together. */
+  --gutter: 40px;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --dur-micro: 150ms;
   --dur-std: 220ms;
@@ -58,6 +66,25 @@
   --tracking-caps: 0.06em;
 
   color-scheme: dark;
+}
+
+/* --- Breakpoints --------------------------------------------------------
+   Two of them, and they only retune tokens. Phone (<=768px) loses the
+   sidebar for a bottom tab bar, so the player has to sit above it and the
+   gutters close in; small phone (<=420px) closes them further. Layout rules
+   live next to the components they belong to. */
+@media (max-width: 768px) {
+  :root {
+    --gutter: 20px;
+    --player-height: 64px;
+    --tabbar-height: 58px;
+  }
+}
+
+@media (max-width: 420px) {
+  :root {
+    --gutter: 16px;
+  }
 }
 
 *,
@@ -97,6 +124,10 @@ body {
   text-rendering: optimizeLegibility;
   letter-spacing: var(--tracking-body);
   overflow: hidden;
+  /* Touch: no grey flash on tap, and no rubber-banding the whole app when a
+     scroll container inside it reaches its end. */
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
 }
 
 button {
@@ -125,6 +156,17 @@ textarea {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
+}
+
+/* iOS zooms the whole page when a field under 16px takes focus, and never
+   zooms back out. Anything you can type into gets 16px at phone widths;
+   sliders and checkboxes are exempt because they are not text entry. */
+@media (max-width: 768px) {
+  input:not([type='range']):not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: 1rem;
+  }
 }
 
 img {
@@ -355,6 +397,12 @@ input[type='range'].pm-range:hover::-webkit-slider-runnable-track {
 .sb-resize:hover::after,
 .sb-resize.dragging::after {
   background: var(--accent);
+}
+/* No sidebar at phone widths, so nothing to resize. */
+@media (max-width: 768px) {
+  .sb-resize {
+    display: none;
+  }
 }
 
 /* --------------------------------------------------------------------------

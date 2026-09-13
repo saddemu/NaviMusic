@@ -87,3 +87,34 @@
   cursor: col-resize !important;
   user-select: none !important;
 }
+
+/* --------------------------------------------------------------------------
+   Phone. The sidebar is a pane you cannot afford at this width, so it goes
+   and a tab bar takes over the primary navigation (see MobileTabBar). The
+   player keeps its place but floats above that bar, and anything that used to
+   clear the player now has to clear both plus the home indicator.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .mainCol {
+    grid-column: 1;
+  }
+
+  .main {
+    padding-bottom: calc(var(--player-height) + var(--tabbar-height) + var(--safe-bottom));
+    scroll-padding-bottom: calc(var(--player-height) + var(--tabbar-height) + var(--safe-bottom));
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  .player {
+    bottom: calc(var(--tabbar-height) + var(--safe-bottom));
+  }
+}

@@ -65,6 +65,14 @@ export const PlaylistIcon = ({ size, ...rest }: IconProps) => (
   </svg>
 );
 
+export const LibraryIcon = ({ size, ...rest }: IconProps) => (
+  <svg {...base(size)} {...rest}>
+    <rect x="3" y="4" width="4" height="16" rx="1.5" />
+    <rect x="9.5" y="4" width="4" height="16" rx="1.5" />
+    <path d="m17.2 5.4 3.3 14.2" />
+  </svg>
+);
+
 export const HeartIcon = ({ filled, size, ...rest }: IconProps & { filled?: boolean }) => (
   <svg {...base(size)} fill={filled ? 'currentColor' : 'none'} {...rest}>
     <path d="M12 21s-7.5-4.5-9.5-9c-1.6-3.6 1-7 4.5-7 2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.5 0 6.1 3.4 4.5 7-2 4.5-9.5 9-9.5 9Z" />

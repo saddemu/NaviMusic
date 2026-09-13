@@ -14,6 +14,7 @@ import {
   GithubIcon,
   HeartIcon,
   HomeIcon,
+  LibraryIcon,
   PlaylistIcon,
   PlusIcon,
   SearchIcon,
@@ -120,6 +121,9 @@ export default function Sidebar() {
         </NavLink>
         <NavLink to="/search" className={navItem} title="Search">
           <SearchIcon size={18} /> <span className={styles.itemLabel}>Search</span>
+        </NavLink>
+        <NavLink to="/library" className={navItem} title="Library">
+          <LibraryIcon size={18} /> <span className={styles.itemLabel}>Library</span>
         </NavLink>
         <NavLink to="/albums" className={navItem} title="Albums">
           <AlbumIcon size={18} /> <span className={styles.itemLabel}>Albums</span>
