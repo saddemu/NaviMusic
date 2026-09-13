@@ -60,6 +60,7 @@ export default function Artists() {
               className={styles.section}
               ref={(el) => {
                 if (el) sectionRefs.current.set(letter, el);
+                else sectionRefs.current.delete(letter);
               }}
             >
               <div className={styles.sectionLabel}>{letter}</div>

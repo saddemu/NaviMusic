@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { Artist } from '@/types/subsonic';
 import { coverArtUrl } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
-import { getInitials } from '@/lib/utils';
+import { getInitials, isNarrowViewport } from '@/lib/utils';
 import styles from './ArtistCard.module.css';
 
 interface Props {
@@ -15,7 +15,7 @@ function ArtistCardInner({ artist }: Props) {
   const img = artist.artistImageUrl
     ? artist.artistImageUrl
     : config && artist.coverArt
-      ? coverArtUrl(config, artist.coverArt, 300)
+      ? coverArtUrl(config, artist.coverArt, isNarrowViewport() ? 200 : 300)
       : '';
 
   return (

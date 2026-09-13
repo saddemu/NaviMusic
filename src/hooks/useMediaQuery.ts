@@ -1,11 +1,5 @@
 import { useCallback, useSyncExternalStore } from 'react';
-
-/**
- * The phone breakpoint. Kept in sync by hand with the `@media` blocks in
- * `global.css` — the two have to agree, because CSS decides where the layout
- * changes and this decides which columns are worth rendering at all.
- */
-export const MOBILE_BREAKPOINT = 768;
+import { MOBILE_BREAKPOINT } from '@/lib/constants';
 
 const MOBILE_QUERY = `(max-width: ${MOBILE_BREAKPOINT}px)`;
 

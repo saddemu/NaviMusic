@@ -18,6 +18,12 @@ export function useLyrics(song: Song | null | undefined, enabled = true) {
     queryKey: ['lyrics', song?.id],
     enabled: !!config && !!song && enabled,
     staleTime: 60 * 60 * 1000,
+    // Without this the global 30-minute gcTime evicts the entry long before
+    // the hour is up, so the fetch happens again anyway.
+    gcTime: 60 * 60 * 1000,
+    // A song with no lyrics answers `null`, which is the answer — asking the
+    // same two endpoints twice more will not produce any.
+    retry: false,
     queryFn: async () => {
       if (!config || !song) return null;
       try {

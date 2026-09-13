@@ -15,7 +15,9 @@ export default function Backdrop() {
   const overrideUrl = useUiStore((s) => s.backdropImageUrl);
   const playingCover = usePlayerStore((s) => s.currentSong?.coverArt);
 
-  const playingUrl = config && playingCover ? coverArtUrl(config, playingCover, 600) : '';
+  // Blurred by 80px before it is ever seen, so the detail in a large image is
+  // thrown away on arrival. 200px is indistinguishable and a tenth the bytes.
+  const playingUrl = config && playingCover ? coverArtUrl(config, playingCover, 200) : '';
   const url = overrideUrl ?? playingUrl;
 
   // Cross-fade between covers — keep the previous URL visible until the new

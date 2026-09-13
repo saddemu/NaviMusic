@@ -6,7 +6,7 @@ import { useAuthStore } from '@/store/authStore';
 import { usePlayerStore } from '@/store/playerStore';
 import { seekCurrent } from '@/lib/player';
 import { useLyrics, activeLineIndex } from '@/hooks/useLyrics';
-import { formatDuration } from '@/lib/utils';
+import { formatDuration, isNarrowViewport } from '@/lib/utils';
 import {
   CloseIcon,
   LyricsIcon,
@@ -85,7 +85,9 @@ export default function NowPlaying() {
 
   if (!visible || !song) return null;
 
-  const cover = config ? coverArtUrl(config, song.coverArt, 1200) : '';
+  // The artwork is min(40vh, 480px) on a desktop and min(78vw, 340px) on a
+  // phone; 1200px everywhere was three times the pixels a phone can show.
+  const cover = config ? coverArtUrl(config, song.coverArt, isNarrowViewport() ? 640 : 1200) : '';
 
   return (
     <>

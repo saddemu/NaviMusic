@@ -16,6 +16,13 @@
 .section {
   margin-top: 24px;
   scroll-margin-top: 24px;
+  /* A library can hold a thousand artists, and all of them are in the DOM at
+     once so the A-Z jumps land instantly. This lets the browser skip layout
+     and paint for the letters that are off screen; the placeholder height is
+     a first guess it replaces with the real one after a section has been
+     rendered once, so the scrollbar settles instead of jumping. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
 }
 .sectionLabel {
   font-family: var(--font-display);
