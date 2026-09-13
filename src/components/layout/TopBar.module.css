@@ -35,8 +35,15 @@
 .bar.scrolled::before {
   opacity: 1;
 }
+/* `position` as well as `pointer-events`: the scroll-edge material is an
+   absolutely positioned `::before`, so it paints above any static child that
+   would otherwise be in the in-flow layer — which is how the wordmark was
+   vanishing the moment the bar picked up its glass. Positioned children sit
+   above it, and `::before` comes first in DOM order so the ordering holds
+   without a z-index on either. */
 .bar > * {
   pointer-events: auto;
+  position: relative;
 }
 
 .profileBtn {
