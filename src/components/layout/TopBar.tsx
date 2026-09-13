@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
 import { ping } from '@/lib/subsonic';
 import { getInitials } from '@/lib/utils';
-import { BrandMark, ChevronRight, LogoutIcon, PulseIcon } from '../ui/Icon';
+import { BrandMark, ChevronRight, LogoutIcon, PulseIcon, SettingsIcon } from '../ui/Icon';
 import styles from './TopBar.module.css';
 
 interface Props {
@@ -125,6 +125,17 @@ export default function TopBar({ scrolled = false }: Props) {
                 <span className={styles.pingDot} aria-hidden />
                 {pingLabel}
               </span>
+            </button>
+            <button
+              className={styles.menuItem}
+              onClick={() => {
+                setOpen(false);
+                navigate('/settings');
+              }}
+              role="menuitem"
+              type="button"
+            >
+              <SettingsIcon size={16} /> Settings
             </button>
             <button
               className={`${styles.menuItem} ${styles.danger}`}

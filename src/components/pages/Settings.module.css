@@ -1,9 +1,17 @@
 .page {
   padding: 0 0 var(--content-bottom);
 }
+/* A single column of rows. On a wide window it centres rather than hugging
+   the left edge with an ocean of empty space beside it — the header rides the
+   same column so the two stay aligned. */
+.headerWrap,
+.body {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
 .body {
   padding: 16px var(--gutter);
-  max-width: 720px;
   display: flex;
   flex-direction: column;
   gap: 12px;
