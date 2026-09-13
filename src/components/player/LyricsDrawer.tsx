@@ -40,12 +40,7 @@ export default function LyricsDrawer() {
         onClick={() => setOpen(false)}
         aria-hidden
       />
-      <aside
-        ref={panelRef}
-        className={styles.drawer}
-        aria-label="Lyrics"
-        aria-hidden={!isOpen}
-      >
+      <aside ref={panelRef} className={styles.drawer} aria-label="Lyrics" aria-hidden={!isOpen}>
         <div className={styles.header}>
           <div className={styles.titleBlock}>
             <h2>Lyrics</h2>

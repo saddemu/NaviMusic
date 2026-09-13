@@ -39,10 +39,10 @@ export default function Starred() {
           >
             {k.charAt(0).toUpperCase() + k.slice(1)} (
             {k === 'songs'
-              ? data?.song.length ?? 0
+              ? (data?.song.length ?? 0)
               : k === 'albums'
-              ? data?.album.length ?? 0
-              : data?.artist.length ?? 0}
+                ? (data?.album.length ?? 0)
+                : (data?.artist.length ?? 0)}
             )
           </button>
         ))}

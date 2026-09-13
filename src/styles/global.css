@@ -88,7 +88,11 @@ body {
   font-size: 0.9375rem;
   line-height: 1.55;
   font-weight: 450;
-  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'calt' 1,
+    'ss01' 1;
   -webkit-font-smoothing: subpixel-antialiased;
   text-rendering: optimizeLegibility;
   letter-spacing: var(--tracking-body);
@@ -193,7 +197,9 @@ input[type='range'].pm-range::-webkit-slider-runnable-track {
     rgba(255, 255, 255, 0.18) 100%
   );
   border-radius: 999px;
-  transition: height var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
+  transition:
+    height var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease);
 }
 input[type='range'].pm-range::-moz-range-track {
   height: var(--track-h);
@@ -217,7 +223,9 @@ input[type='range'].pm-range::-webkit-slider-thumb {
   margin-top: calc((var(--track-h) - 12px) / 2);
   opacity: 0;
   transform: scale(0.6);
-  transition: opacity var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
 }
 input[type='range'].pm-range::-moz-range-thumb {
   height: 12px;
@@ -227,7 +235,9 @@ input[type='range'].pm-range::-moz-range-thumb {
   border: 0;
   opacity: 0;
   transform: scale(0.6);
-  transition: opacity var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
 }
 /* The track thickens under the pointer — the affordance grows toward the
    finger instead of only revealing a dot. */
@@ -402,8 +412,9 @@ input[type='range'].pm-range:hover::-webkit-slider-runnable-track {
   *,
   *::before,
   *::after {
-    transition-property: opacity, color, background-color, border-color, box-shadow, fill,
-      stroke, backdrop-filter, filter !important;
+    transition-property:
+      opacity, color, background-color, border-color, box-shadow, fill, stroke, backdrop-filter,
+      filter !important;
     scroll-behavior: auto !important;
   }
 }

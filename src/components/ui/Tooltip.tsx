@@ -1,4 +1,11 @@
-import { cloneElement, isValidElement, useRef, useState, type ReactElement, type ReactNode } from 'react';
+import {
+  cloneElement,
+  isValidElement,
+  useRef,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
 import styles from './Tooltip.module.css';
 
 interface TooltipProps {

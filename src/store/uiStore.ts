@@ -50,7 +50,11 @@ interface UiStore {
   setFullscreenOrigin: (origin: { x: number; y: number } | null) => void;
 }
 
-export const SIDEBAR_BOUNDS = { min: SIDEBAR_MIN, max: SIDEBAR_MAX, threshold: COLLAPSED_THRESHOLD };
+export const SIDEBAR_BOUNDS = {
+  min: SIDEBAR_MIN,
+  max: SIDEBAR_MAX,
+  threshold: COLLAPSED_THRESHOLD,
+};
 
 export const useUiStore = create<UiStore>((set, get) => {
   const initial = load();

@@ -147,7 +147,9 @@
   color: var(--text-tertiary);
   border-radius: 50%;
   opacity: 0;
-  transition: opacity var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease);
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease);
 }
 .item:hover .removeBtn,
 .item:focus-within .removeBtn {

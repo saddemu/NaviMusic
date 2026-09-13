@@ -4,7 +4,7 @@ services:
     container_name: pmusic
     ports:
       # Expose only on localhost — your external Nginx reverse-proxies to here.
-      - "127.0.0.1:4580:3000"
+      - '127.0.0.1:4580:3000'
     restart: unless-stopped
     read_only: true
     tmpfs:

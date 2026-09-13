@@ -67,9 +67,14 @@ export function useDragScroll<T extends HTMLElement>() {
     };
 
     // One spring for the glide, re-targeted rather than restarted.
-    const glide = new Spring(0, (v) => {
-      el.scrollLeft = v;
-    }, SPRING.flick, { delta: 0.5, speed: 5 });
+    const glide = new Spring(
+      0,
+      (v) => {
+        el.scrollLeft = v;
+      },
+      SPRING.flick,
+      { delta: 0.5, speed: 5 },
+    );
 
     // A separate spring returns the rubber-band to zero.
     const bandBack = new Spring(0, applyOvershoot, SPRING.sheet, { delta: 0.2, speed: 1 });
@@ -140,7 +145,8 @@ export function useDragScroll<T extends HTMLElement>() {
           applyOvershoot(
             past === 0
               ? 0
-              : Math.sign(past) * Math.min(MAX_RUBBERBAND, Math.abs(rubberband(past, el.clientWidth))),
+              : Math.sign(past) *
+                  Math.min(MAX_RUBBERBAND, Math.abs(rubberband(past, el.clientWidth))),
           );
         });
       }

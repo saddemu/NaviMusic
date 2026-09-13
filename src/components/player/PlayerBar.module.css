@@ -92,7 +92,9 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+  transition:
+    color var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
   flex-shrink: 0;
 }
@@ -130,7 +132,9 @@
   place-items: center;
   color: var(--text-secondary);
   border-radius: 50%;
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+  transition:
+    color var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
 }
 .ctrl:hover:not(:disabled) {

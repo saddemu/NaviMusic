@@ -45,8 +45,8 @@ export default function ArtistDetail() {
     const url = info.data?.largeImageUrl
       ? info.data.largeImageUrl
       : config && artist.data?.coverArt
-      ? coverArtUrl(config, artist.data.coverArt, 800)
-      : undefined;
+        ? coverArtUrl(config, artist.data.coverArt, 800)
+        : undefined;
     setBackdropImageUrl(url);
     return () => setBackdropImageUrl(undefined);
   }, [config, artist.data?.coverArt, info.data?.largeImageUrl, setBackdropImageUrl]);

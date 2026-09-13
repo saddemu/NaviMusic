@@ -44,7 +44,9 @@
   place-items: center;
   color: var(--text-tertiary);
   border-radius: 4px;
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
+  transition:
+    color var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease);
 }
 .alphaBar button:hover {
   color: var(--accent);

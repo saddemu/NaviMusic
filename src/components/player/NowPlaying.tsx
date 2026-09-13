@@ -128,9 +128,7 @@ export default function NowPlaying() {
         </div>
 
         <div className={`${styles.body}${!showLyricsCol ? ' ' + styles.bodyNoLyrics : ''}`}>
-          <div className={styles.albumArt}>
-            {cover && <img src={cover} alt={song.title} />}
-          </div>
+          <div className={styles.albumArt}>{cover && <img src={cover} alt={song.title} />}</div>
           {showLyricsCol && (
             <div className={styles.lyricsCol}>
               <div className={styles.heading}>
@@ -231,7 +229,12 @@ export default function NowPlaying() {
             >
               <ShuffleIcon size={20} />
             </button>
-            <button className={styles.ctrl} onClick={prev} aria-label="Previous track" type="button">
+            <button
+              className={styles.ctrl}
+              onClick={prev}
+              aria-label="Previous track"
+              type="button"
+            >
               <PrevIcon size={26} />
             </button>
             <button

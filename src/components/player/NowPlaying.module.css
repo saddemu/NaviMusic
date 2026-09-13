@@ -24,8 +24,7 @@
      opacity are coupled to the same 0..1 the drag produces, so dragging the
      sheet down shrinks and fades it exactly as far as the finger has gone. */
   transform-origin: var(--origin-x, 50%) var(--origin-y, 100%);
-  transform: translateY(var(--sheet-offset, 100%))
-    scale(calc(0.9 + 0.1 * var(--sheet-p, 0)));
+  transform: translateY(var(--sheet-offset, 100%)) scale(calc(0.9 + 0.1 * var(--sheet-p, 0)));
   opacity: var(--sheet-p, 0);
   border-radius: calc((1 - var(--sheet-p, 0)) * var(--radius-xl));
   will-change: transform, opacity;
@@ -101,7 +100,9 @@
   -webkit-backdrop-filter: var(--blur-thin);
   border: 1px solid var(--glass-edge);
   border-radius: 50%;
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+  transition:
+    color var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
 }
 .iconBtn:hover {
@@ -193,8 +194,11 @@
   padding: 6px 0;
   color: var(--text-tertiary);
   cursor: pointer;
-  transition: color var(--dur-std) var(--ease), transform var(--dur-std) var(--ease),
-    font-size var(--dur-std) var(--ease), opacity var(--dur-std) var(--ease),
+  transition:
+    color var(--dur-std) var(--ease),
+    transform var(--dur-std) var(--ease),
+    font-size var(--dur-std) var(--ease),
+    opacity var(--dur-std) var(--ease),
     font-weight var(--dur-std) var(--ease);
 }
 .lyricLine:hover {
@@ -264,7 +268,9 @@
   place-items: center;
   color: var(--text-secondary);
   border-radius: 50%;
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+  transition:
+    color var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
 }
 .ctrl:hover {

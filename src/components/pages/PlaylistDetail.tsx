@@ -87,9 +87,7 @@ export default function PlaylistDetail() {
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
-        <div className={styles.cover}>
-          {cover && <img src={cover} alt={playlist.name} />}
-        </div>
+        <div className={styles.cover}>{cover && <img src={cover} alt={playlist.name} />}</div>
         <div className={styles.heroInfo}>
           <span className={styles.eyebrow}>Playlist</span>
           <h1 className={styles.title}>{playlist.name}</h1>

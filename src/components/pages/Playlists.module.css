@@ -66,7 +66,9 @@
   color: var(--text-tertiary);
   opacity: 0;
   border-radius: 50%;
-  transition: opacity var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease);
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease);
 }
 .row:hover .delete {
   opacity: 1;

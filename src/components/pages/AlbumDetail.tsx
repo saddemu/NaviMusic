@@ -54,7 +54,9 @@ export default function AlbumDetail() {
   }
 
   if (!album) {
-    return <EmptyState title="Album not found" message="It may have been removed from the library." />;
+    return (
+      <EmptyState title="Album not found" message="It may have been removed from the library." />
+    );
   }
 
   const cover = config ? coverArtUrl(config, album.coverArt, 600) : '';
@@ -143,12 +145,7 @@ export default function AlbumDetail() {
           <span></span>
         </div>
         {songs.map((song, i) => (
-          <TrackRow
-            key={song.id}
-            song={song}
-            index={i + 1}
-            onPlay={() => playQueue(songs, i)}
-          />
+          <TrackRow key={song.id} song={song} index={i + 1} onPlay={() => playQueue(songs, i)} />
         ))}
       </div>
     </div>

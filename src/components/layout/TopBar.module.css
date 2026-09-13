@@ -49,7 +49,9 @@
   -webkit-backdrop-filter: var(--blur-thin);
   border: 1px solid var(--glass-edge);
   border-radius: 999px;
-  transition: background var(--dur-micro) var(--ease), border-color var(--dur-micro) var(--ease),
+  transition:
+    background var(--dur-micro) var(--ease),
+    border-color var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
   max-width: 240px;
 }

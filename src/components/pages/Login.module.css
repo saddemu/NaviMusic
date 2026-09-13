@@ -83,7 +83,9 @@
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 0.875rem;
-  transition: filter var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+  transition:
+    filter var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
 }
 .submit:hover:not(:disabled) {
   filter: brightness(1.08);

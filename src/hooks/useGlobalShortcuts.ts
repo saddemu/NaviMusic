@@ -25,7 +25,7 @@ export function useGlobalShortcuts() {
             player.next();
           } else {
             e.preventDefault();
-            seekCurrent(Math.min((player.duration || 0), player.progress + 10));
+            seekCurrent(Math.min(player.duration || 0, player.progress + 10));
           }
           break;
         case 'ArrowLeft':

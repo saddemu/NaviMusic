@@ -29,8 +29,18 @@
   /* Stops short of full black at the bottom: the player is a pane of glass
      and needs something to be glass *over*. */
   background:
-    radial-gradient(ellipse 90% 70% at 50% 0%, transparent 0%, rgba(9, 9, 9, 0.5) 75%, rgba(9, 9, 9, 0.82) 100%),
-    linear-gradient(180deg, rgba(9, 9, 9, 0.18) 0%, rgba(9, 9, 9, 0.5) 60%, rgba(9, 9, 9, 0.78) 100%);
+    radial-gradient(
+      ellipse 90% 70% at 50% 0%,
+      transparent 0%,
+      rgba(9, 9, 9, 0.5) 75%,
+      rgba(9, 9, 9, 0.82) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(9, 9, 9, 0.18) 0%,
+      rgba(9, 9, 9, 0.5) 60%,
+      rgba(9, 9, 9, 0.78) 100%
+    );
 }
 @keyframes backdrop-in {
   from {

@@ -85,7 +85,9 @@ export default function Settings() {
             max={10}
             step={1}
             className={`pm-range ${styles.slider}`}
-            style={{ '--progress': `${(settings.crossfadeSeconds / 10) * 100}%` } as React.CSSProperties}
+            style={
+              { '--progress': `${(settings.crossfadeSeconds / 10) * 100}%` } as React.CSSProperties
+            }
             value={settings.crossfadeSeconds}
             onChange={(e) => settings.set('crossfadeSeconds', Number(e.target.value))}
           />
@@ -113,11 +115,7 @@ export default function Settings() {
               {pingQuery.isError && ` · unreachable`}
             </span>
           </div>
-          <button
-            className="btn-ghost"
-            onClick={() => pingQuery.refetch()}
-            type="button"
-          >
+          <button className="btn-ghost" onClick={() => pingQuery.refetch()} type="button">
             Test
           </button>
         </div>

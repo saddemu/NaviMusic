@@ -45,14 +45,14 @@ cd pMusic
 ./run.sh start          # build + start detached on http://127.0.0.1:4580
 ```
 
-| Command             | What it does                        |
-| ------------------- | ----------------------------------- |
-| `./run.sh start`    | Build and start detached            |
-| `./run.sh stop`     | Stop and remove the container       |
-| `./run.sh restart`  | Stop, rebuild, start                |
-| `./run.sh rebuild`  | Force a no-cache rebuild, then start |
-| `./run.sh logs`     | Tail container logs                 |
-| `./run.sh status`   | Show container status               |
+| Command            | What it does                         |
+| ------------------ | ------------------------------------ |
+| `./run.sh start`   | Build and start detached             |
+| `./run.sh stop`    | Stop and remove the container        |
+| `./run.sh restart` | Stop, rebuild, start                 |
+| `./run.sh rebuild` | Force a no-cache rebuild, then start |
+| `./run.sh logs`    | Tail container logs                  |
+| `./run.sh status`  | Show container status                |
 
 The container binds to `127.0.0.1:4580` only — it is meant to sit behind a reverse
 proxy, never to be exposed directly.
@@ -115,12 +115,12 @@ server {
 
 ## Logging in
 
-| Field         | Example                                              |
-| ------------- | ---------------------------------------------------- |
-| Server URL    | `https://music.example.com`                          |
-| Username      | your Navidrome username                              |
-| Password      | your Navidrome password                              |
-| Remember me   | `localStorage` when ticked, `sessionStorage` when not |
+| Field       | Example                                               |
+| ----------- | ----------------------------------------------------- |
+| Server URL  | `https://music.example.com`                           |
+| Username    | your Navidrome username                               |
+| Password    | your Navidrome password                               |
+| Remember me | `localStorage` when ticked, `sessionStorage` when not |
 
 The password is used **once**, in memory, to derive a Subsonic token
 (`md5(password + salt)` with a freshly generated salt) and is then discarded. Only
@@ -210,7 +210,7 @@ Full detail in [SECURITY.md](SECURITY.md). The short version:
   URLs, because the browser fetches them as media.
 - Server URLs are validated with the `URL` constructor: non-`http(s)` schemes are
   rejected, and embedded credentials, query, and fragment are stripped.
-- Server-supplied HTML (artist bios) passes through **DOMPurify** with a tag *and*
+- Server-supplied HTML (artist bios) passes through **DOMPurify** with a tag _and_
   attribute whitelist; bio links are forced to `rel="noopener noreferrer"`. Lyrics
   render as plain text. ESLint blocks `dangerouslySetInnerHTML` at error level.
 - **No third-party requests at runtime** — fonts are self-hosted, and there are no

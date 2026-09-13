@@ -57,7 +57,9 @@
   border-radius: 999px;
   font-size: 0.78125rem;
   color: var(--text-secondary);
-  transition: background var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease);
+  transition:
+    background var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease);
 }
 .chip:hover {
   background: var(--bg-overlay);

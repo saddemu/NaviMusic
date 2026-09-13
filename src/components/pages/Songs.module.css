@@ -51,7 +51,9 @@
   font-weight: 600;
   font-size: 0.8125rem;
   letter-spacing: 0.4px;
-  transition: filter var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+  transition:
+    filter var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
 }
 .playBtn:hover:not(:disabled) {
   filter: brightness(1.1);
@@ -72,7 +74,9 @@
   font-weight: 500;
   font-size: 0.8125rem;
   border: 1px solid var(--border-subtle);
-  transition: background var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+  transition:
+    background var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
 }
 .shuffleBtn:hover:not(:disabled) {
   background: var(--bg-overlay);
