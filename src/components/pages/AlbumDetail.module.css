@@ -167,10 +167,13 @@
     gap: 18px;
     padding: 8px var(--gutter) 20px;
   }
+  /* The artwork centres; the text below it stays left-aligned, so the title
+     still starts on the gutter like every other page. */
   .cover {
-    width: min(62vw, 240px);
+    width: min(64vw, 260px);
     height: auto;
     aspect-ratio: 1 / 1;
+    align-self: center;
   }
   .title {
     font-size: clamp(1.875rem, 9vw, 3.5rem);
@@ -201,7 +204,7 @@
      is a dead column taking width from the title — and its offset is what put
      the rows out of line with the header. */
   .reorderRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
   .dragHandle {

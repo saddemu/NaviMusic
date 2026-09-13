@@ -60,23 +60,23 @@
   /* The A–Z rail is a pointer affordance: 18px tall targets do not survive a
      thumb, and the grid needs the width more than the shortcut. */
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .alphaBar {
     display: none;
   }
 
+  /* Three across, and `minmax(0, …)` rather than a bare `1fr`: a bare one
+     keeps an automatic minimum of the track's min-content, and a card's
+     min-content is the intrinsic width of its artwork — which is what was
+     pushing this grid off the side of the screen. */
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
   }
 
   .sectionLabel {
     font-size: 1.125rem;
-  }
-}
-
-@media (max-width: 420px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
+    margin: 6px 4px 8px;
   }
 }
