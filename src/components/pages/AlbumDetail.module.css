@@ -130,6 +130,27 @@
   letter-spacing: 0.6px;
   color: var(--text-tertiary);
 }
+/* Playlist rows only: a drag handle in its own column, beside the track row.
+   Shared module — PlaylistDetail renders from this stylesheet too. */
+.reorderRow {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  align-items: center;
+  gap: 4px;
+}
+.reorderRow.dragging {
+  opacity: 0.5;
+}
+.dragHandle {
+  display: grid;
+  place-items: center;
+  color: var(--text-tertiary);
+  cursor: grab;
+}
+.dragHandle:active {
+  cursor: grabbing;
+}
+
 .tracksFooter {
   margin-top: 18px;
   font-size: 0.75rem;
@@ -172,5 +193,16 @@
   .tracksHeader {
     gap: 10px;
     padding: 8px;
+  }
+
+  /* Reordering is HTML5 drag and drop, which never fires on touch. The handle
+     is a dead column taking width from the title — and its offset is what put
+     the rows out of line with the header. */
+  .reorderRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .dragHandle {
+    display: none;
   }
 }

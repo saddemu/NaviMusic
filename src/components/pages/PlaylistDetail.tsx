@@ -155,15 +155,9 @@ export default function PlaylistDetail() {
               setDragIdx(null);
               setOverIdx(null);
             }}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '20px 1fr',
-              alignItems: 'center',
-              gap: 4,
-              opacity: dragIdx === i ? 0.5 : 1,
-            }}
+            className={`${styles.reorderRow}${dragIdx === i ? ' ' + styles.dragging : ''}`}
           >
-            <span style={{ color: 'var(--text-tertiary)', cursor: 'grab' }} aria-hidden>
+            <span className={styles.dragHandle} aria-hidden>
               <DragIcon size={14} />
             </span>
             <TrackRow
