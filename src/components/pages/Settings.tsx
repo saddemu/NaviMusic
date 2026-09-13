@@ -3,6 +3,8 @@ import { ping } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore, type MaxBitrate } from '@/store/settingsStore';
 import { showToast } from '@/store/toastStore';
+import { APP_VERSION, REPO_URL } from '@/lib/constants';
+import { GithubIcon } from '../ui/Icon';
 import PageHeader from '../ui/PageHeader';
 import styles from './Settings.module.css';
 
@@ -135,6 +137,21 @@ export default function Settings() {
           >
             Clear
           </button>
+        </div>
+
+        <div className={styles.row}>
+          <div className={styles.rowText}>
+            <span className={styles.label}>About</span>
+            <span className={styles.help}>pMusic v{APP_VERSION} · MIT license</span>
+          </div>
+          <a
+            className={`btn-ghost ${styles.repoBtn}`}
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <GithubIcon size={15} /> View on GitHub
+          </a>
         </div>
       </div>
     </div>

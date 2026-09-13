@@ -274,3 +274,15 @@
 .resizeHandle.dragging::after {
   background: var(--accent);
 }
+
+/* Repo link pinned to the bottom — `margin-top: auto` keeps it there even when
+   collapsed, where `.playlists` (the flex:1 spacer) is hidden. */
+.repoLink {
+  margin-top: auto;
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  font-size: 0.8125rem;
+}
+.repoLink:hover {
+  color: var(--text-primary);
+}
