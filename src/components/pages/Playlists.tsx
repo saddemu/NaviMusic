@@ -162,9 +162,7 @@ export default function Playlists() {
           </>
         }
       >
-        <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
-          This action can't be undone.
-        </p>
+        <p style={{ margin: 0, color: 'var(--text-secondary)' }}>This action can't be undone.</p>
       </Modal>
     </div>
   );

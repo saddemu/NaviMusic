@@ -50,7 +50,9 @@
   place-items: center;
   color: var(--text-tertiary);
   border-radius: var(--radius-sm);
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+  transition:
+    color var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
   flex-shrink: 0;
 }
@@ -86,7 +88,9 @@
   padding: 8px 12px 8px 36px;
   color: var(--text-primary);
   outline: none;
-  transition: border-color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
+  transition:
+    border-color var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease);
 }
 .search::placeholder {
   color: var(--text-tertiary);
@@ -127,7 +131,9 @@
   font-weight: 500;
   font-size: 0.875rem;
   position: relative;
-  transition: background var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease),
+  transition:
+    background var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
   white-space: nowrap;
 }
@@ -195,7 +201,9 @@
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   font-size: 0.8125rem;
-  transition: background var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease),
+  transition:
+    background var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
 }
 .playlistItem:hover {
@@ -230,7 +238,9 @@
   border-radius: var(--radius-sm);
   font-size: 0.8125rem;
   margin-top: 2px;
-  transition: color var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease),
+  transition:
+    color var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
 }
 .createBtn:hover {
@@ -273,4 +283,16 @@
 .resizeHandle:hover::after,
 .resizeHandle.dragging::after {
   background: var(--accent);
+}
+
+/* Repo link pinned to the bottom — `margin-top: auto` keeps it there even when
+   collapsed, where `.playlists` (the flex:1 spacer) is hidden. */
+.repoLink {
+  margin-top: auto;
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  font-size: 0.8125rem;
+}
+.repoLink:hover {
+  color: var(--text-primary);
 }

@@ -4,12 +4,14 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPlaylists, createPlaylist } from '@/lib/subsonic';
 import { useAuthStore } from '@/store/authStore';
 import { useUiStore } from '@/store/uiStore';
+import { REPO_URL } from '@/lib/constants';
 import {
   AlbumIcon,
   ArtistIcon,
   BrandMark,
   ChevronRight,
   GenreIcon,
+  GithubIcon,
   HeartIcon,
   HomeIcon,
   PlaylistIcon,
@@ -167,6 +169,16 @@ export default function Sidebar() {
           ))}
         </div>
       )}
+
+      <a
+        className={`${styles.item} ${styles.repoLink}`}
+        href={REPO_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="View on GitHub"
+      >
+        <GithubIcon size={18} /> <span className={styles.itemLabel}>View on GitHub</span>
+      </a>
 
       <Modal
         open={createOpen}

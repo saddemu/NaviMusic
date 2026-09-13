@@ -63,11 +63,7 @@ export function buildUrl(
   return url.toString();
 }
 
-async function request<T>(
-  config: SubsonicConfig,
-  endpoint: string,
-  params?: Params,
-): Promise<T> {
+async function request<T>(config: SubsonicConfig, endpoint: string, params?: Params): Promise<T> {
   let res: Response;
   try {
     // POST keeps u/t/s out of URLs (and therefore out of access logs).
@@ -95,8 +91,7 @@ async function request<T>(
   return root as T;
 }
 
-const arr = <T>(v: T | T[] | undefined): T[] =>
-  v === undefined ? [] : Array.isArray(v) ? v : [v];
+const arr = <T>(v: T | T[] | undefined): T[] => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
 
 // ─── endpoints ──────────────────────────────────────────────────────────────
 
@@ -299,10 +294,7 @@ export async function getLyrics(
   return data.lyrics ?? {};
 }
 
-export async function getLyricsBySongId(
-  config: SubsonicConfig,
-  id: string,
-): Promise<LyricsList> {
+export async function getLyricsBySongId(config: SubsonicConfig, id: string): Promise<LyricsList> {
   const data = await request<{ lyricsList: LyricsList }>(config, 'getLyricsBySongId', { id });
   return {
     structuredLyrics: arr(data.lyricsList?.structuredLyrics).map((s) => ({
@@ -337,9 +329,7 @@ export function parseLrc(text: string): StructuredLyrics {
         const minutes = Number.parseInt(tagMatch[1], 10);
         const seconds = Number.parseInt(tagMatch[2], 10);
         const fracRaw = tagMatch[3] ?? '';
-        const fracMs = fracRaw
-          ? Number.parseInt(fracRaw.padEnd(3, '0').slice(0, 3), 10)
-          : 0;
+        const fracMs = fracRaw ? Number.parseInt(fracRaw.padEnd(3, '0').slice(0, 3), 10) : 0;
         const ms = minutes * 60_000 + seconds * 1000 + fracMs;
         lines.push({ start: ms, value });
       }

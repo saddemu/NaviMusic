@@ -15,8 +15,8 @@ function ArtistCardInner({ artist }: Props) {
   const img = artist.artistImageUrl
     ? artist.artistImageUrl
     : config && artist.coverArt
-    ? coverArtUrl(config, artist.coverArt, 300)
-    : '';
+      ? coverArtUrl(config, artist.coverArt, 300)
+      : '';
 
   return (
     <Link to={`/artist/${artist.id}`} className={styles.card}>

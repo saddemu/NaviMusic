@@ -14,7 +14,9 @@
   overflow: hidden;
   background: var(--bg-surface);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.32);
-  transition: transform var(--dur-std) var(--ease), box-shadow var(--dur-std) var(--ease);
+  transition:
+    transform var(--dur-std) var(--ease),
+    box-shadow var(--dur-std) var(--ease);
 }
 .cover img {
   width: 100%;
@@ -23,7 +25,9 @@
 }
 .card:hover .cover {
   transform: scale(1.03);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-default);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--border-default);
 }
 /* The press is the moment to answer, not the release. */
 .card:active .cover {
@@ -43,7 +47,9 @@
   place-items: center;
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity var(--dur-std) var(--ease), transform var(--dur-std) var(--ease);
+  transition:
+    opacity var(--dur-std) var(--ease),
+    transform var(--dur-std) var(--ease);
   box-shadow: 0 8px 16px var(--accent-glow);
 }
 .card:hover .playOverlay,

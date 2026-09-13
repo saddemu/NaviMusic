@@ -43,7 +43,10 @@ export function useLyrics(song: Song | null | undefined, enabled = true) {
  * Returns the index of the active line at the given playback time (seconds),
  * or -1 if no line should be highlighted yet.
  */
-export function activeLineIndex(lyrics: StructuredLyrics | null | undefined, seconds: number): number {
+export function activeLineIndex(
+  lyrics: StructuredLyrics | null | undefined,
+  seconds: number,
+): number {
   if (!lyrics?.synced || lyrics.line.length === 0) return -1;
   const ms = seconds * 1000 - (lyrics.offset ?? 0);
   let lo = 0;

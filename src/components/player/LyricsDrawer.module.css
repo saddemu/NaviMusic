@@ -91,7 +91,9 @@
   line-height: 1.55;
   padding: 6px 0;
   color: var(--text-tertiary);
-  transition: color var(--dur-std) var(--ease), transform var(--dur-std) var(--ease),
+  transition:
+    color var(--dur-std) var(--ease),
+    transform var(--dur-std) var(--ease),
     font-weight var(--dur-std) var(--ease);
   cursor: pointer;
 }

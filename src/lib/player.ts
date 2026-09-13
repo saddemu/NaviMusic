@@ -20,9 +20,7 @@ function setupMediaSession(): void {
   mediaSessionWired = true;
   navigator.mediaSession.setActionHandler('play', () => usePlayerStore.getState().resume());
   navigator.mediaSession.setActionHandler('pause', () => usePlayerStore.getState().pause());
-  navigator.mediaSession.setActionHandler('previoustrack', () =>
-    usePlayerStore.getState().prev(),
-  );
+  navigator.mediaSession.setActionHandler('previoustrack', () => usePlayerStore.getState().prev());
   navigator.mediaSession.setActionHandler('nexttrack', () => usePlayerStore.getState().next());
   navigator.mediaSession.setActionHandler('seekto', (details) => {
     if (details.seekTime !== undefined && current) {
@@ -59,7 +57,7 @@ function startProgressTimer(): void {
       const safeDur =
         Number.isFinite(rawDur) && rawDur > 0
           ? rawDur
-          : state.currentSong?.duration ?? state.duration;
+          : (state.currentSong?.duration ?? state.duration);
       state._setProgress(seek, safeDur);
       // Scrobble at 50% (or 4min) — once per song
       if (

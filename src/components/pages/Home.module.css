@@ -111,7 +111,9 @@
   overflow: hidden;
   background: var(--bg-surface);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-  transition: transform var(--dur-std) var(--ease), box-shadow var(--dur-std) var(--ease);
+  transition:
+    transform var(--dur-std) var(--ease),
+    box-shadow var(--dur-std) var(--ease);
 }
 .heroCard:hover .heroImg {
   transform: scale(1.015);
@@ -143,7 +145,9 @@
   place-items: center;
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity var(--dur-std) var(--ease), transform var(--dur-std) var(--ease);
+  transition:
+    opacity var(--dur-std) var(--ease),
+    transform var(--dur-std) var(--ease);
   box-shadow: 0 10px 22px var(--accent-glow);
   border: 0;
   z-index: 1;
@@ -230,7 +234,9 @@
   color: var(--text-tertiary);
   border-radius: 50%;
   opacity: 0;
-  transition: opacity var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease);
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease);
   border: 0;
   background: none;
   cursor: pointer;

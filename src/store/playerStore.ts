@@ -226,7 +226,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     set({
       queue: next,
       currentIndex: next.length === 0 ? -1 : nextIndex,
-      currentSong: next.length === 0 ? null : next[nextIndex] ?? currentSong,
+      currentSong: next.length === 0 ? null : (next[nextIndex] ?? currentSong),
       isPlaying: next.length === 0 ? false : get().isPlaying,
     });
   },
@@ -251,12 +251,12 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
       progress: 0,
     }),
 
-  toggleQueueDrawer: () =>
-    set({ isQueueOpen: !get().isQueueOpen, isLyricsOpen: false }),
-  setQueueDrawer: (open) => set({ isQueueOpen: open, isLyricsOpen: open ? false : get().isLyricsOpen }),
-  toggleLyricsDrawer: () =>
-    set({ isLyricsOpen: !get().isLyricsOpen, isQueueOpen: false }),
-  setLyricsDrawer: (open) => set({ isLyricsOpen: open, isQueueOpen: open ? false : get().isQueueOpen }),
+  toggleQueueDrawer: () => set({ isQueueOpen: !get().isQueueOpen, isLyricsOpen: false }),
+  setQueueDrawer: (open) =>
+    set({ isQueueOpen: open, isLyricsOpen: open ? false : get().isLyricsOpen }),
+  toggleLyricsDrawer: () => set({ isLyricsOpen: !get().isLyricsOpen, isQueueOpen: false }),
+  setLyricsDrawer: (open) =>
+    set({ isLyricsOpen: open, isQueueOpen: open ? false : get().isQueueOpen }),
   toggleFullscreen: () => set({ isFullscreen: !get().isFullscreen }),
   setFullscreen: (open) => set({ isFullscreen: open }),
 

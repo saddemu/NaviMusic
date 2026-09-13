@@ -176,9 +176,7 @@ export default function Songs() {
       </div>
       <div ref={containerRef} className={styles.virtual}>
         <div style={{ height: totalHeight, position: 'relative' }} className={styles.viewport}>
-          <div
-            style={{ position: 'absolute', top: startIndex * ROW_HEIGHT, left: 0, right: 0 }}
-          >
+          <div style={{ position: 'absolute', top: startIndex * ROW_HEIGHT, left: 0, right: 0 }}>
             {visible.map((s, i) => (
               <TrackRow
                 key={s.id + (startIndex + i)}

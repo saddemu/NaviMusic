@@ -34,12 +34,12 @@ as documented, and findings that require an already-compromised browser or devic
 
 ## What the app does with your data
 
-| Data | Where it goes | Where it's stored |
-| --- | --- | --- |
-| Password | Used once, in memory, to derive `md5(password + salt)`, then discarded | **Never stored, never logged, never sent in a URL** |
-| Auth token + salt | Sent to *your* music server with each API call (POST body) | `localStorage` (with "Remember me") or `sessionStorage`, key `pmusic.auth.v1` |
-| Server URL | Requests go only to this origin | `pmusic.lastServerUrl` in `localStorage` (kept after logout to prefill the login form) |
-| Settings, volume, UI state, recent searches | Nowhere — local only | `localStorage` |
+| Data                                        | Where it goes                                                          | Where it's stored                                                                      |
+| ------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Password                                    | Used once, in memory, to derive `md5(password + salt)`, then discarded | **Never stored, never logged, never sent in a URL**                                    |
+| Auth token + salt                           | Sent to _your_ music server with each API call (POST body)             | `localStorage` (with "Remember me") or `sessionStorage`, key `pmusic.auth.v1`          |
+| Server URL                                  | Requests go only to this origin                                        | `pmusic.lastServerUrl` in `localStorage` (kept after logout to prefill the login form) |
+| Settings, volume, UI state, recent searches | Nowhere — local only                                                   | `localStorage`                                                                         |
 
 The app communicates **exclusively** with the Subsonic/OpenSubsonic server you type in at
 login. There are no analytics, no telemetry, no CDNs, no external fonts, and no

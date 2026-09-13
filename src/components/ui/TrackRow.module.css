@@ -6,7 +6,9 @@
   padding: 8px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+  transition:
+    background var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
   position: relative;
 }
 .row:hover {
@@ -117,7 +119,9 @@
   place-items: center;
   border-radius: 50%;
   opacity: 0;
-  transition: opacity var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease),
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
 }
 .row:hover .heart,
@@ -144,7 +148,9 @@
   color: var(--text-tertiary);
   border-radius: 50%;
   opacity: 0;
-  transition: opacity var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease),
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
 }
 .row:hover .more,

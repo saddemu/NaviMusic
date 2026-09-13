@@ -55,15 +55,8 @@ function FeaturedCard({ album, eyebrow }: { album: Album; eyebrow: string }) {
       <h3 className={styles.heroTitle}>{album.name}</h3>
       <span className={styles.heroSub}>{album.artist}</span>
       <div className={styles.heroImg}>
-        {cover && (
-          <img src={cover} alt={album.name} loading="lazy" decoding="async" />
-        )}
-        <button
-          className={styles.heroPlay}
-          onClick={onPlay}
-          aria-label="Play"
-          type="button"
-        >
+        {cover && <img src={cover} alt={album.name} loading="lazy" decoding="async" />}
+        <button className={styles.heroPlay} onClick={onPlay} aria-label="Play" type="button">
           <PlayIcon size={20} />
         </button>
       </div>
@@ -86,9 +79,7 @@ function SongCell({ song, queue, index }: { song: Song; queue: Song[]; index: nu
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && playQueue(queue, index)}
     >
-      <div className={styles.songCover}>
-        {cover && <img src={cover} alt="" loading="lazy" />}
-      </div>
+      <div className={styles.songCover}>{cover && <img src={cover} alt="" loading="lazy" />}</div>
       <div className={styles.songText}>
         <div className={styles.songTitle}>{song.title}</div>
         <div className={styles.songArtist}>{song.artist}</div>

@@ -22,9 +22,7 @@ export default function Genres() {
       <PageHeader title="Genres" subtitle={`${sorted.length} genres`} />
       <div className={styles.grid}>
         {isLoading
-          ? Array.from({ length: 12 }).map((_, i) => (
-              <Skeleton key={i} height={120} radius={12} />
-            ))
+          ? Array.from({ length: 12 }).map((_, i) => <Skeleton key={i} height={120} radius={12} />)
           : sorted.map((g) => (
               <button
                 key={g.value}

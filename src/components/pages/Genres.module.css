@@ -14,7 +14,9 @@
   padding: 18px;
   text-align: left;
   cursor: pointer;
-  transition: transform var(--dur-std) var(--ease), border-color var(--dur-std) var(--ease);
+  transition:
+    transform var(--dur-std) var(--ease),
+    border-color var(--dur-std) var(--ease);
   display: flex;
   flex-direction: column;
   gap: 8px;

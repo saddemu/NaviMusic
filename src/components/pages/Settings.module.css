@@ -63,7 +63,9 @@
   height: 16px;
   background: var(--text-secondary);
   border-radius: 50%;
-  transition: transform var(--dur-micro) var(--ease), background var(--dur-micro) var(--ease);
+  transition:
+    transform var(--dur-micro) var(--ease),
+    background var(--dur-micro) var(--ease);
 }
 .toggle.on {
   background: var(--accent);
@@ -75,4 +77,10 @@
 }
 .slider {
   width: 200px;
+}
+.repoBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
 }

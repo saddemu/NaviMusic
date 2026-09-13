@@ -59,7 +59,9 @@
   border-radius: var(--radius-sm);
   font-weight: 500;
   font-size: 0.8125rem;
-  transition: filter var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+  transition:
+    filter var(--dur-micro) var(--ease),
+    transform var(--dur-micro) var(--ease);
 }
 :global(.btn-primary):hover {
   filter: brightness(1.1);
@@ -77,7 +79,9 @@
   border-radius: var(--radius-sm);
   font-size: 0.8125rem;
   font-weight: 500;
-  transition: background var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease),
+  transition:
+    background var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease),
     transform var(--dur-micro) var(--ease);
 }
 :global(.btn-ghost):hover {

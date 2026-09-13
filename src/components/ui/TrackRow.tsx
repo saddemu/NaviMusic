@@ -86,9 +86,7 @@ function TrackRowInner({
         )}
         <div className={styles.titleWrap}>
           {showCover && (
-            <div className={styles.cover}>
-              {cover && <img src={cover} alt="" loading="lazy" />}
-            </div>
+            <div className={styles.cover}>{cover && <img src={cover} alt="" loading="lazy" />}</div>
           )}
           <div className={styles.titleCol}>
             <div className={styles.title}>{song.title}</div>
@@ -100,10 +98,7 @@ function TrackRowInner({
         {showArtist && (
           <div className={styles.cell}>
             {song.artistId ? (
-              <Link
-                to={`/artist/${song.artistId}`}
-                onClick={(e) => e.stopPropagation()}
-              >
+              <Link to={`/artist/${song.artistId}`} onClick={(e) => e.stopPropagation()}>
                 {song.artist}
               </Link>
             ) : (
@@ -122,9 +117,7 @@ function TrackRowInner({
             )}
           </div>
         )}
-        {showBitrate && (
-          <div className={styles.cell}>{song.bitRate ? `${song.bitRate}` : '—'}</div>
-        )}
+        {showBitrate && <div className={styles.cell}>{song.bitRate ? `${song.bitRate}` : '—'}</div>}
         <div className={`${styles.cell} ${styles.duration}`}>{formatDuration(song.duration)}</div>
         <button
           className={`${styles.heart}${isStarred ? ' ' + styles.active : ''}`}

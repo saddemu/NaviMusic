@@ -37,12 +37,7 @@ export default function QueueDrawer() {
         onClick={() => setQueueDrawer(false)}
         aria-hidden
       />
-      <aside
-        ref={panelRef}
-        className={styles.drawer}
-        aria-label="Play queue"
-        aria-hidden={!isOpen}
-      >
+      <aside ref={panelRef} className={styles.drawer} aria-label="Play queue" aria-hidden={!isOpen}>
         <div className={styles.header}>
           <h2>Up Next</h2>
           <button
