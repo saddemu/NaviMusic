@@ -85,8 +85,8 @@ export default function App() {
       showToast('Session expired. Please log in again.', 'error');
       navigate('/login', { replace: true });
     };
-    window.addEventListener('pmusic:auth-error', onAuthError);
-    return () => window.removeEventListener('pmusic:auth-error', onAuthError);
+    window.addEventListener('navimusic:auth-error', onAuthError);
+    return () => window.removeEventListener('navimusic:auth-error', onAuthError);
   }, [logout, navigate]);
 
   if (!isHydrated) return null;

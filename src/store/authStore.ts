@@ -3,6 +3,8 @@ import type { SubsonicConfig, SubsonicUser } from '@/types/subsonic';
 import { deriveToken, generateSalt } from '@/lib/crypto';
 import { getUser, normalizeServerUrl, ping } from '@/lib/subsonic';
 
+// The 'pmusic.' prefix predates the rename to NaviMusic. Renaming these keys
+// would sign every existing install out, so they keep their old names.
 const STORAGE_KEY = 'pmusic.auth.v1';
 const LAST_SERVER_KEY = 'pmusic.lastServerUrl';
 

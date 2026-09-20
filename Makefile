@@ -1,4 +1,4 @@
-# pMusic — convenience wrappers around the npm scripts.
+# NaviMusic — convenience wrappers around the npm scripts.
 #
 # Nothing here is required to build the project: `npm run <script>` still works
 # exactly as before. These targets just give the common workflows one name each,
@@ -10,7 +10,7 @@ NPM := npm
 .PHONY: help install dev build preview lint typecheck format-check code-quality fix clean
 
 help: ## Show this help
-	@echo "pMusic — available targets:"
+	@echo "NaviMusic — available targets:"
 	@echo
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'

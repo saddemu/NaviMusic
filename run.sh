@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# pMusic — start/stop helper
+# NaviMusic — start/stop helper
 #
 # Usage:
 #   ./run.sh start     Build (if needed) and start the container in the background
@@ -27,23 +27,23 @@ cmd="${1:-}"
 
 case "$cmd" in
   start)
-    echo "→ Starting pMusic on http://127.0.0.1:4580"
+    echo "→ Starting NaviMusic on http://127.0.0.1:4580"
     $DC up -d --build --remove-orphans
     ;;
 
   stop)
-    echo "→ Stopping pMusic"
+    echo "→ Stopping NaviMusic"
     $DC down --remove-orphans
     ;;
 
   restart)
-    echo "→ Restarting pMusic"
+    echo "→ Restarting NaviMusic"
     $DC down --remove-orphans
     $DC up -d --build --remove-orphans
     ;;
 
   rebuild)
-    echo "→ Rebuilding pMusic from scratch"
+    echo "→ Rebuilding NaviMusic from scratch"
     $DC down --remove-orphans
     $DC build --no-cache
     $DC up -d --remove-orphans
@@ -59,7 +59,7 @@ case "$cmd" in
 
   *)
     cat <<EOF
-pMusic helper
+NaviMusic helper
 
 Usage: $0 <command>
 

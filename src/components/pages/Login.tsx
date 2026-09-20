@@ -60,7 +60,7 @@ export default function Login() {
       <form className={styles.card} onSubmit={onSubmit} autoComplete="on">
         <div className={styles.brand}>
           <BrandMark size={28} aria-hidden />
-          pMusic
+          NaviMusic
         </div>
         <p className={styles.tagline}>Connect to your Navidrome library.</p>
 

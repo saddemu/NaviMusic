@@ -1,7 +1,7 @@
 blank_issues_enabled: true
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/saddemu/pMusic/security/advisories/new
+    url: https://github.com/saddemu/NaviMusic/security/advisories/new
     about: >-
       Do not open a public issue for a security problem. Use private
       reporting, which stays confidential until a fix ships. See SECURITY.md.

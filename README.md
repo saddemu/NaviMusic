@@ -1,36 +1,36 @@
-# pMusic
+# NaviMusic
 
 A self-hosted web music player for **Navidrome** and other [OpenSubsonic](https://opensubsonic.netlify.app/)
 servers. Fast, polished, and built to feel like a native music app rather than a web page.
 
-[![CI](https://github.com/saddemu/pMusic/actions/workflows/ci.yml/badge.svg)](https://github.com/saddemu/pMusic/actions/workflows/ci.yml)
-[![Security](https://github.com/saddemu/pMusic/actions/workflows/security.yml/badge.svg)](https://github.com/saddemu/pMusic/actions/workflows/security.yml)
+[![CI](https://github.com/saddemu/NaviMusic/actions/workflows/ci.yml/badge.svg)](https://github.com/saddemu/NaviMusic/actions/workflows/ci.yml)
+[![Security](https://github.com/saddemu/NaviMusic/actions/workflows/security.yml/badge.svg)](https://github.com/saddemu/NaviMusic/actions/workflows/security.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 React 18 + Vite + TypeScript, Zustand, TanStack Query, Howler.js, CSS Modules.
 No UI framework, no Tailwind, no runtime third-party requests.
 
-> **pMusic is a client, not a server.** It does not host, index, transcode, or
+> **NaviMusic is a client, not a server.** It does not host, index, transcode, or
 > distribute music. You point it at a Subsonic-compatible server you already run.
 
 ---
 
 ## How it works
 
-pMusic is a **static single-page app with no backend of its own**. The Docker image
+NaviMusic is a **static single-page app with no backend of its own**. The Docker image
 ships nothing but a static-file server. Every API call goes straight from your browser
 to your music server:
 
 ```
-browser ──HTTPS──> pMusic (static files)
+browser ──HTTPS──> NaviMusic (static files)
    │
    └────HTTPS────> your Navidrome / OpenSubsonic server
 ```
 
 Two consequences worth knowing before you deploy:
 
-- **CORS is on your server.** If pMusic and Navidrome are on different origins, the
-  music server (or its proxy) has to allow the pMusic origin. Same origin behind one
+- **CORS is on your server.** If NaviMusic and Navidrome are on different origins, the
+  music server (or its proxy) has to allow the NaviMusic origin. Same origin behind one
   reverse proxy is the simplest setup.
 - **TLS and security headers are on your proxy.** The container has no TLS, no HSTS,
   no CSP. See [Deployment](#deployment).
@@ -40,8 +40,8 @@ Two consequences worth knowing before you deploy:
 ## Quick start (Docker)
 
 ```bash
-git clone https://github.com/saddemu/pMusic.git
-cd pMusic
+git clone https://github.com/saddemu/NaviMusic.git
+cd NaviMusic
 ./run.sh start          # build + start detached on http://127.0.0.1:4580
 ```
 
@@ -125,7 +125,7 @@ server {
 The password is used **once**, in memory, to derive a Subsonic token
 (`md5(password + salt)` with a freshly generated salt) and is then discarded. Only
 `{ serverUrl, username, token, salt }` is persisted. If the server ever rejects the
-token, pMusic logs out and returns to the login screen.
+token, NaviMusic logs out and returns to the login screen.
 
 The login form warns when you enter a plain-`http://` URL for a non-loopback host.
 

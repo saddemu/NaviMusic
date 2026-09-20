@@ -142,7 +142,7 @@ export default function Settings() {
         <div className={styles.row}>
           <div className={styles.rowText}>
             <span className={styles.label}>About</span>
-            <span className={styles.help}>pMusic v{APP_VERSION} · MIT license</span>
+            <span className={styles.help}>NaviMusic v{APP_VERSION} · MIT license</span>
           </div>
           <a
             className={`btn-ghost ${styles.repoBtn}`}

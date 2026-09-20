@@ -75,7 +75,7 @@ export default function Sidebar() {
       <div className={styles.brandRow}>
         <div className={styles.brand}>
           <BrandMark size={22} className={styles.brandMark} />
-          {!collapsed && <span className={styles.brandText}>pMusic</span>}
+          {!collapsed && <span className={styles.brandText}>NaviMusic</span>}
         </div>
         {!collapsed && (
           <button

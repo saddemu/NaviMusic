@@ -82,9 +82,9 @@ export default function TopBar({ scrolled = false }: Props) {
     <div className={`${styles.bar}${scrolled ? ' ' + styles.scrolled : ''}`}>
       {/* Phone only — the sidebar carries the wordmark at every other width.
           The bar pads itself past the notch, so this sits clear of it. */}
-      <Link to="/" className={styles.brandMobile} aria-label="pMusic home">
+      <Link to="/" className={styles.brandMobile} aria-label="NaviMusic home">
         <BrandMark size={20} />
-        <span>pMusic</span>
+        <span>NaviMusic</span>
       </Link>
       <div className={styles.wrap} ref={wrapRef}>
         <button

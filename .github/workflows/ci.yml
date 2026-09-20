@@ -51,4 +51,4 @@ jobs:
           persist-credentials: false
 
       - name: Build image
-        run: docker build -t pmusic:ci .
+        run: docker build -t navimusic:ci .

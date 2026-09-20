@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+// Pre-rename key name, kept so the stored layout survives the move to NaviMusic.
 const STORAGE_KEY = 'pmusic.ui.v1';
 
 const SIDEBAR_MIN = 64;

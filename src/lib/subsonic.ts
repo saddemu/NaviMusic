@@ -16,7 +16,7 @@ import type {
 } from '@/types/subsonic';
 import { SubsonicError } from '@/types/subsonic';
 
-const CLIENT = 'pMusic';
+const CLIENT = 'NaviMusic';
 const VERSION = '1.16.1';
 
 export function normalizeServerUrl(raw: string): string {
@@ -84,7 +84,7 @@ async function request<T>(config: SubsonicConfig, endpoint: string, params?: Par
     const message = root?.error?.message ?? 'Unknown server error.';
     // Subsonic auth errors: 40 = wrong username/password, 41 = token mismatch
     if (code === 40 || code === 41) {
-      window.dispatchEvent(new CustomEvent('pmusic:auth-error'));
+      window.dispatchEvent(new CustomEvent('navimusic:auth-error'));
     }
     throw new SubsonicError(code, message);
   }
