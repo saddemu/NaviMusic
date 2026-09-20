@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { Analytics } from '@vercel/analytics/react';
 import { useAuthStore } from './store/authStore';
 import { showToast } from './store/toastStore';
 import AppLayout from './components/layout/AppLayout';
@@ -92,122 +93,125 @@ export default function App() {
   if (!isHydrated) return null;
 
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <Suspense fallback={<PageFallback />}>
-            <Login />
-          </Suspense>
-        }
-      />
-      <Route element={<ProtectedRoutes />}>
+    <>
+      <Routes>
         <Route
-          path="/"
+          path="/login"
           element={
             <Suspense fallback={<PageFallback />}>
-              <Home />
+              <Login />
             </Suspense>
           }
         />
-        <Route
-          path="/albums"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Albums />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/album/:id"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <AlbumDetail />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/artists"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Artists />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/artist/:id"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <ArtistDetail />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/songs"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Songs />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/genres"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Genres />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/library"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Library />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/search"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Search />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/playlists"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Playlists />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/playlist/:id"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <PlaylistDetail />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/starred"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Starred />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <Settings />
-            </Suspense>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+        <Route element={<ProtectedRoutes />}>
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Home />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/albums"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Albums />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/album/:id"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <AlbumDetail />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/artists"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Artists />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/artist/:id"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <ArtistDetail />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/songs"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Songs />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/genres"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Genres />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/library"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Library />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Search />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/playlists"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Playlists />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/playlist/:id"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <PlaylistDetail />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/starred"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Starred />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <Settings />
+              </Suspense>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+      <Analytics />
+    </>
   );
 }
