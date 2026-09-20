@@ -1,12 +1,12 @@
 # Security Policy
 
-pMusic is a static single-page app. There is **no backend of our own**: the Docker image
+NaviMusic is a static single-page app. There is **no backend of our own**: the Docker image
 ships a plain static-file server and nothing else. Everything described below happens in
 your browser, against the music server you configure.
 
 ## Supported versions
 
-pMusic is developed on `main` and has no release branches. Only the current `main` and
+NaviMusic is developed on `main` and has no release branches. Only the current `main` and
 the latest tag receive fixes. If you are running an older build, update before reporting.
 
 ## Reporting a vulnerability
@@ -14,7 +14,7 @@ the latest tag receive fixes. If you are running an older build, update before r
 **Please do not open a public issue for a security problem.**
 
 Use GitHub's private reporting instead:
-[**Report a vulnerability**](https://github.com/saddemu/pMusic/security/advisories/new)
+[**Report a vulnerability**](https://github.com/saddemu/NaviMusic/security/advisories/new)
 (Security → Advisories → Report a vulnerability). That channel is private until a fix
 ships.
 
@@ -94,4 +94,4 @@ third-party requests of any kind. You can verify this in your browser's network 
   These URLs reach your own music server's access log. A `Referrer-Policy` of
   `strict-origin-when-cross-origin` keeps them out of cross-origin referrers.
 - **CORS must be relaxed on your music server** when it is on a different origin from
-  pMusic. Allow the pMusic origin specifically, not `*`.
+  NaviMusic. Allow the NaviMusic origin specifically, not `*`.

@@ -13,6 +13,7 @@ import EmptyState from '../ui/EmptyState';
 import { SearchIcon } from '../ui/Icon';
 import styles from './Search.module.css';
 
+// Pre-rename key name, kept so recent searches survive the move to NaviMusic.
 const RECENT_KEY = 'pmusic.recent-searches';
 
 function readRecent(): string[] {

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+// Pre-rename key name, kept so saved settings survive the move to NaviMusic.
 const STORAGE_KEY = 'pmusic.settings.v1';
 
 export type MaxBitrate = 128 | 192 | 256 | 320 | 0;

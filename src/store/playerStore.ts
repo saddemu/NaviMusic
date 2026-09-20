@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Song } from '@/types/subsonic';
 import { shuffleArray } from '@/lib/utils';
 
+// Pre-rename key name, kept so the saved volume survives the move to NaviMusic.
 const VOLUME_KEY = 'pmusic.volume';
 
 function loadVolume(): number {

@@ -1,5 +1,5 @@
 /*
- * pMusic service worker.
+ * NaviMusic service worker.
  *
  * Its whole job is to make the app shell installable and launchable without a
  * network round trip. It deliberately does NOT touch the Navidrome server:
@@ -12,8 +12,8 @@
  * build gives them new filenames.
  */
 const VERSION = 'v1';
-const SHELL_CACHE = `pmusic-shell-${VERSION}`;
-const ASSET_CACHE = `pmusic-assets-${VERSION}`;
+const SHELL_CACHE = `navimusic-shell-${VERSION}`;
+const ASSET_CACHE = `navimusic-assets-${VERSION}`;
 
 /** Entry points that have to be there for a cold, offline launch. */
 const SHELL = ['/', '/manifest.webmanifest', '/favicon.svg', '/icon-192.png', '/icon-512.png'];
@@ -35,7 +35,14 @@ self.addEventListener('activate', (event) => {
       .then((keys) =>
         Promise.all(
           keys
-            .filter((k) => k.startsWith('pmusic-') && k !== SHELL_CACHE && k !== ASSET_CACHE)
+            // 'pmusic-' is the pre-rename prefix: keep purging it so the caches
+            // an older install left behind do not linger forever.
+            .filter(
+              (k) =>
+                (k.startsWith('navimusic-') || k.startsWith('pmusic-')) &&
+                k !== SHELL_CACHE &&
+                k !== ASSET_CACHE,
+            )
             .map((k) => caches.delete(k)),
         ),
       )
