@@ -1,7 +1,7 @@
 # Build stage
 # Pinned by digest so a moved tag cannot change what we build on.
 # Dependabot (docker ecosystem) opens a pull request when the tag moves.
-FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS builder
+FROM node:22-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914 AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -12,7 +12,7 @@ RUN npm run build
 
 # Runtime: tiny static-file server, non-root.
 # Reverse proxy / TLS / headers are handled externally (e.g. Nginx on the host).
-FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS runner
+FROM node:22-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914 AS runner
 WORKDIR /app
 RUN npm install -g serve@14.2.6
 COPY --from=builder /app/dist ./dist
